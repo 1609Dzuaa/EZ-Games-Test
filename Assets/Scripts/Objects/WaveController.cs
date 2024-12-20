@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static GameEnums;
 
 public class WaveController : BaseCharacter
 {
@@ -21,7 +22,7 @@ public class WaveController : BaseCharacter
         _rb.MovePosition(transform.position + new Vector3(_speed, 0f, 0f) * Time.deltaTime);
         if (Time.time - _timer > 1f)
         {
-            Debug.Log("time: " + Time.time);
+            //Debug.Log("time: " + Time.time);
             _timer = Time.time;
         }
     }
@@ -30,7 +31,9 @@ public class WaveController : BaseCharacter
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("You lose");
+            UIManager.Instance.TogglePopup(true, EPopupID.Again);
+            //EventsManager.Instance.Notify(EventID.OnPlayAgain);
+            //Debug.Log("You lose");
         }
     }
 }

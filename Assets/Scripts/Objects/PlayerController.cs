@@ -29,7 +29,7 @@ public class PlayerController : BaseCharacter
             input = input.normalized;
         }
 
-        Debug.Log("input: " + input);
+        //Debug.Log("input: " + input);
 
         Vector3 moveDirection = transform.TransformDirection(input);
 
