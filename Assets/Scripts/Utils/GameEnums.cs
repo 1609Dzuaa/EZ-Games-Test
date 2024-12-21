@@ -9,6 +9,8 @@ public static class GameEnums
         OnAllowToPlay, //khi cho phép chơi (3 2 1)
         OnDecreaseCat, //giảm số mèo khi bị sóng đánh
         OnReceiveResult, //khi kết thúc màn
+        OnMeasureSpeed,
+
     }
 
     public enum EPopupID

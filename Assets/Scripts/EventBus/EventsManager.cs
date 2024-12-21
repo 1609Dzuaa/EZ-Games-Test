@@ -11,7 +11,10 @@ public class EventsManager : BaseSingleton<EventsManager>
     public void Subscribe(EventID eventID, Action<object> callback)
     {
         if (!_dictEvents.ContainsKey(eventID))
+        {
             _dictEvents.Add(eventID, callback);
+            return;
+        }
 
         _dictEvents[eventID] += callback;
     }
