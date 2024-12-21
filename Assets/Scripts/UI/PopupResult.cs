@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using static GameEnums;
 
@@ -18,11 +17,13 @@ public struct ResultParams
 public class PopupResult : PopupController
 {
     [SerializeField] TextMeshProUGUI _txtResult, _txtRescued, _txtTimer, _txtSpeed, _txtGet;
+    const int GET_TRIPLE = 0;
+    const int GET_NORMAL = 1;
 
     protected override void Awake()
     {
         base.Awake();
-        EventsManager.Instance.Subcribe(EventID.OnReceiveResult, OnReceiveResult);
+        EventsManager.Instance.Subscribe(EventID.OnReceiveResult, OnReceiveResult);
     }
 
     private void OnReceiveResult(object obj)
@@ -59,6 +60,19 @@ public class PopupResult : PopupController
 
     private void OnDestroy()
     {
-        EventsManager.Instance.Unsubcribe(EventID.OnReceiveResult, OnReceiveResult);
+        EventsManager.Instance.Unsubscribe(EventID.OnReceiveResult, OnReceiveResult);
+    }
+
+    public void OnGetClick(int index)
+    {
+        switch (index)
+        {
+            case GET_TRIPLE:
+                Debug.Log("Get Triple");
+                break;
+            case GET_NORMAL:
+                Debug.Log("Get Normal");
+                break;
+        }
     }
 }

@@ -8,7 +8,7 @@ public class EventsManager : BaseSingleton<EventsManager>
 {
     private Dictionary<EventID, Action<object>> _dictEvents = new Dictionary<EventID, Action<object>>();
 
-    public void Subcribe(EventID eventID, Action<object> callback)
+    public void Subscribe(EventID eventID, Action<object> callback)
     {
         if (!_dictEvents.ContainsKey(eventID))
             _dictEvents.Add(eventID, callback);
@@ -16,7 +16,7 @@ public class EventsManager : BaseSingleton<EventsManager>
         _dictEvents[eventID] += callback;
     }
 
-    public void Unsubcribe(EventID eventID, Action<object> callback)
+    public void Unsubscribe(EventID eventID, Action<object> callback)
     {
         if (_dictEvents.ContainsKey(eventID))
             _dictEvents[eventID] -= callback;

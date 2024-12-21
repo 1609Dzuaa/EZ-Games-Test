@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static GameEnums;
@@ -24,16 +24,6 @@ public class WaveController : BaseCharacter
         {
             //Debug.Log("time: " + Time.time);
             _timer = Time.time;
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            UIManager.Instance.TogglePopup(true, EPopupID.Again);
-            //EventsManager.Instance.Notify(EventID.OnPlayAgain);
-            //Debug.Log("You lose");
         }
     }
 }

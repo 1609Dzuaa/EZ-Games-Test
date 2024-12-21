@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static GameEnums;
 
 public class PopupAgain : PopupController
 {
@@ -12,7 +13,7 @@ public class PopupAgain : PopupController
         switch(index)
         {
             case BUTTON_CLOSE:
-                //GameManager.Instance.ReloadScene();
+                UIManager.Instance.TogglePopup(true, EPopupID.Result);
                 break;
             case BUTTON_REVIVE:
                 //Revive();

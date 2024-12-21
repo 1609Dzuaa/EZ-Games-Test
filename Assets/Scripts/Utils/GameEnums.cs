@@ -6,7 +6,8 @@ public static class GameEnums
 {
     public enum EventID
     {
-        OnPlayAgain, //play again khi bị sóng đánh
+        OnAllowToPlay, //khi cho phép chơi (3 2 1)
+        OnDecreaseCat, //giảm số mèo khi bị sóng đánh
         OnReceiveResult, //khi kết thúc màn
     }
 

@@ -27,6 +27,10 @@ public class UIManager : BaseSingleton<UIManager>
     public void TogglePopup(bool isShow, EPopupID popupID)
     {
         if (_dictPopupUIs.ContainsKey(popupID))
+        {
+            foreach (var popup in _popupUIs)
+                popup.PopupPrefab.SetActive(false);
             _dictPopupUIs[popupID].PopupPrefab.SetActive(isShow);
+        }
     }
 }
