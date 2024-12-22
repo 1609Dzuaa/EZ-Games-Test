@@ -16,7 +16,7 @@ public class PopupAgain : PopupController
                 UIManager.Instance.TogglePopup(true, EPopupID.Result);
                 break;
             case BUTTON_REVIVE:
-                //Revive();
+                EventsManager.Instance.Notify(EventID.OnRevive);
                 break;
         }
     }

@@ -26,7 +26,7 @@ public class StaminaController : MonoBehaviour
     [SerializeField] Slider _sliderStamina;
     [SerializeField] Image _imageSlider;
     [SerializeField] Transform _staminaSpawn;
-    float _decreasePrefab, _initialStamina, _decreaseStamina;
+    float _decreasePrefab, _initialStamina, _decreaseStamina, _cacheIncrease;
     bool _allowDecrease = true;
     int _countTouch = 0;
     const float DECREASE_EACH_COUNT_FACTOR = 10.0f;
@@ -49,7 +49,8 @@ public class StaminaController : MonoBehaviour
 
     private void Start()
     {
-        StaminaSpeed sp = new StaminaSpeed(_decreasePrefab, (_decreasePrefab * SPEED_INCREASE_EACH_COUNT_FACTOR));
+        _cacheIncrease = _decreasePrefab * SPEED_INCREASE_EACH_COUNT_FACTOR;
+        StaminaSpeed sp = new StaminaSpeed(_decreasePrefab, _cacheIncrease);
         EventsManager.Instance.Notify(EventID.OnUpgradeSpeed, sp);
     }
 
@@ -61,6 +62,7 @@ public class StaminaController : MonoBehaviour
     private void StopDecrease(object obj)
     {
         _allowDecrease = false;
+        EventsManager.Instance.Notify(EventID.OnUpdatePlayerSpeed, _cacheIncrease * _countTouch);
     }
 
     // Update is called once per frame

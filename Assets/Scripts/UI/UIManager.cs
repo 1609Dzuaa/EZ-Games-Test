@@ -32,10 +32,7 @@ public class UIManager : BaseSingleton<UIManager>
         }
     }
 
-    private void DisplayJoystick(object obj)
-    {
-        _joyStick.SetActive(true);
-    }
+    private void DisplayJoystick(object obj) => _joyStick.SetActive(true);
 
     private void OnDestroy()
     {

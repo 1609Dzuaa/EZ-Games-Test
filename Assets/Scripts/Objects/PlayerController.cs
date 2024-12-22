@@ -26,16 +26,33 @@ public class PlayerController : BaseCharacter
         base.Awake();
         _listCatsRescued = new List<int>();
         EventsManager.Instance.Subscribe(EventID.OnDecreaseCat, DecreaseCat);
+        EventsManager.Instance.Subscribe(EventID.OnUpdatePlayerSpeed, UpdatePlayerSpeed);
+    }
+
+    private void Start()
+    {
+        EventsManager.Instance.Notify(EventID.OnSendPosition, new MapSlider
+        {
+            PlayerPos = transform,
+            WavePos = null
+        });
     }
 
     private void OnDestroy()
     {
         EventsManager.Instance.Unsubscribe(EventID.OnDecreaseCat, DecreaseCat);
+        EventsManager.Instance.Unsubscribe(EventID.OnUpdatePlayerSpeed, UpdatePlayerSpeed);
     }
 
     private void DecreaseCat(object obj)
     {
         _listCatsRescued.RemoveAt(_listCatsRescued.Count - 1);
+    }
+
+    private void UpdatePlayerSpeed(object obj)
+    {
+        _speed += (float)obj;
+        Debug.Log("updateSpeed: " + _speed);
     }
 
     protected override void Update()
@@ -124,10 +141,8 @@ public class PlayerController : BaseCharacter
 
     public bool IsInsideSector(Vector3 point, Vector3 center, Vector3 sectorStart, Vector3 sectorEnd, float radiusSquared)
     {
-        // Tính toán vector tương đối từ tâm đến điểm
         Vector3 relPoint = new Vector3(point.x - center.x, point.z - center.z);
 
-        // Kiểm tra các điều kiện
         return !AreClockwise(sectorStart, relPoint) &&
                AreClockwise(sectorEnd, relPoint) &&
                IsWithinRadius(relPoint, radiusSquared);

@@ -12,6 +12,9 @@ public static class GameEnums
         OnMeasureSpeed,
         OnUpgradeSpeed, //upgrade speed khi touch scr lúc countdown
         OnIncreaseSpeed, //tăng speed cho player khi touch x lần (x là tham số truyền vào)
+        OnSendPosition, //gửi vị trí của player, wave cho MapSlider
+        OnRevive,
+        OnUpdatePlayerSpeed, //update speed của player khi đã countdown xong
 
     }
 
