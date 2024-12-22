@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using DG.Tweening;
 using static GameEnums;
+using static GameConstants;
 using UnityEngine.UI;
 
 public struct StaminaSpeed
@@ -21,27 +22,34 @@ public struct StaminaSpeed
 public class StaminaController : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI _txtStamina;
-    [SerializeField] float _stamina;
+    [SerializeField] float _stamina, _tweenDuration;
     [SerializeField] Slider _sliderStamina;
     [SerializeField] Image _imageSlider;
     [SerializeField] Transform _staminaSpawn;
-    float _decreaseEachCount, _initialStamina;
+    float _decreasePrefab, _initialStamina, _decreaseStamina;
     bool _allowDecrease = true;
     int _countTouch = 0;
+    const float DECREASE_EACH_COUNT_FACTOR = 10.0f;
+    const float SPEED_INCREASE_EACH_COUNT_FACTOR = 0.05f;
+    const float STAMINA_DECREASE_EACH_COUNT_FACTOR = 0.5f;
+    const float MIN_STAMINA_ENABLED = 0f;
 
-    // Start is called before the first frame update
+    //decrease prefab = InitStamina / 10
+    //decrease stamina = decrease prefab / 2
+    //speed increase each = decrease stamina / 10
     void Awake()
     {
         _txtStamina.text = _stamina.ToString() + "/" + _stamina.ToString();
         _initialStamina = _stamina;
-        _decreaseEachCount = _stamina / 10.0f;
-        _sliderStamina.value = 1f;
+        _decreasePrefab = _stamina / DECREASE_EACH_COUNT_FACTOR;
+        _decreaseStamina = _decreasePrefab * STAMINA_DECREASE_EACH_COUNT_FACTOR;
+        _sliderStamina.value = SLIDER_MAX_VALUE;
         EventsManager.Instance.Subscribe(EventID.OnAllowToPlay, StopDecrease);
     }
 
     private void Start()
     {
-        StaminaSpeed sp = new StaminaSpeed(_decreaseEachCount, (_decreaseEachCount /10.0f) / 2.0f);
+        StaminaSpeed sp = new StaminaSpeed(_decreasePrefab, (_decreasePrefab * SPEED_INCREASE_EACH_COUNT_FACTOR));
         EventsManager.Instance.Notify(EventID.OnUpgradeSpeed, sp);
     }
 
@@ -60,17 +68,20 @@ public class StaminaController : MonoBehaviour
     {
         if (Input.touchCount > 0 && _allowDecrease)
         {
-            Touch touch = Input.GetTouch(0);
-
-            if (touch.phase == TouchPhase.Began)
+            if (_stamina >= _decreaseStamina)
             {
-                _stamina -= (_decreaseEachCount / 2.0f);
-                _stamina = Mathf.Clamp(_stamina, 0f, _initialStamina);
-                _imageSlider.DOFillAmount(_stamina / _initialStamina, 0.1f);
-                _txtStamina.text = _stamina.ToString() + "/" + _initialStamina.ToString();
-                SpawnPrefab(EPoolable.StaminaPrefab, _staminaSpawn.position);
-                SpawnPrefab(EPoolable.SpeedPrefab, touch.position);
-                _countTouch++;
+                Touch touch = Input.GetTouch(0);
+
+                if (touch.phase == TouchPhase.Began)
+                {
+                    _stamina -= (_decreasePrefab * STAMINA_DECREASE_EACH_COUNT_FACTOR);
+                    _stamina = Mathf.Clamp(_stamina, MIN_STAMINA_ENABLED, _initialStamina);
+                    _imageSlider.DOFillAmount(_stamina / _initialStamina, _tweenDuration);
+                    _txtStamina.text = _stamina.ToString() + "/" + _initialStamina.ToString();
+                    SpawnPrefab(EPoolable.StaminaPrefab, _staminaSpawn.position);
+                    SpawnPrefab(EPoolable.SpeedPrefab, touch.position);
+                    _countTouch++;
+                }
             }
         }
     }

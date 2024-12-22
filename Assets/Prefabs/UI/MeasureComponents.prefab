@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f4dc99eb1d444f543a36124ade27bc07, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 16bea18061820e54ab055a8d6acf447f, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -869,6 +869,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _txtStamina: {fileID: 4831347368718258427}
   _stamina: 500
+  _tweenDuration: 0
   _sliderStamina: {fileID: 4362975994990603495}
   _imageSlider: {fileID: 1454011480686709811}
   _staminaSpawn: {fileID: 6786868220692556717}
