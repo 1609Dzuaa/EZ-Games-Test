@@ -13,7 +13,15 @@ public struct PopupUI
 public class UIManager : BaseSingleton<UIManager>
 {
     [SerializeField] PopupUI[] _popupUIs;
+    [SerializeField] GameObject _joyStick;
     Dictionary<EPopupID, PopupUI> _dictPopupUIs = new Dictionary<EPopupID, PopupUI>();
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _joyStick.SetActive(false);
+        EventsManager.Instance.Subscribe(EventID.OnAllowToPlay, DisplayJoystick);
+    }
 
     private void Start()
     {
@@ -22,6 +30,16 @@ public class UIManager : BaseSingleton<UIManager>
             _popupUIs[i].PopupPrefab.SetActive(false);
             _dictPopupUIs.Add(_popupUIs[i].PopupID, _popupUIs[i]);
         }
+    }
+
+    private void DisplayJoystick(object obj)
+    {
+        _joyStick.SetActive(true);
+    }
+
+    private void OnDestroy()
+    {
+        EventsManager.Instance.Unsubscribe(EventID.OnAllowToPlay, DisplayJoystick);
     }
 
     public void TogglePopup(bool isShow, EPopupID popupID)

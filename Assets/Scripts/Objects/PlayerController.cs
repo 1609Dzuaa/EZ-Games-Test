@@ -135,18 +135,18 @@ public class PlayerController : BaseCharacter
 
     private void MeasureSpeed()
     {
-        Debug.Log("joystick, isM: " + _joyStick.input + ", " + _isMoving);
+        //Debug.Log("joystick, isM: " + _joyStick.input + ", " + _isMoving);
         if (_joyStick.input != Vector2.zero && !_isMoving)
         {
             _isMoving = true;
             EventsManager.Instance.Notify(EventID.OnMeasureSpeed, _joyStick.input);
-            Debug.Log("noti1");
+            //Debug.Log("noti1");
         }
         else if (_joyStick.input == Vector2.zero && _isMoving)
         {
             _isMoving = false;
             EventsManager.Instance.Notify(EventID.OnMeasureSpeed, _joyStick.input);
-            Debug.Log("noti2");
+            //Debug.Log("noti2");
         }
     }
 

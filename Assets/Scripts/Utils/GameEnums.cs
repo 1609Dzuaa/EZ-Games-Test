@@ -10,6 +10,8 @@ public static class GameEnums
         OnDecreaseCat, //giảm số mèo khi bị sóng đánh
         OnReceiveResult, //khi kết thúc màn
         OnMeasureSpeed,
+        OnUpgradeSpeed, //upgrade speed khi touch scr lúc countdown
+        OnIncreaseSpeed, //tăng speed cho player khi touch x lần (x là tham số truyền vào)
 
     }
 
@@ -24,5 +26,12 @@ public static class GameEnums
     {
         Failed = 0,
         Completed = 1,
+    }
+
+    public enum EPoolable
+    {
+        StaminaPrefab,
+        SpeedPrefab,
+
     }
 }

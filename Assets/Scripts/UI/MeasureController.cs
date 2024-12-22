@@ -12,13 +12,13 @@ public class MeasureController : MonoBehaviour
     void Awake()
     {
         EventsManager.Instance.Subscribe(EventID.OnMeasureSpeed, MeasureSpeed);
-        Debug.Log("sub");
+        //Debug.Log("sub");
     }
 
     private void MeasureSpeed(object obj)
     {
         Vector2 input = (Vector2)obj;
-        Debug.Log("rotate");
+        //Debug.Log("rotate");
         transform.DOLocalRotate(new Vector3(0, 0, (input == Vector2.zero) ? 180f : -180f), _duration, RotateMode.WorldAxisAdd);
     }
 
