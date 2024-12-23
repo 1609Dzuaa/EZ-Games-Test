@@ -7,6 +7,7 @@ using DG.Tweening;
 public class MeasureController : MonoBehaviour
 {
     [SerializeField] float _duration;
+    Tween _tweenRotate;
 
     // Start is called before the first frame update
     void Awake()
@@ -18,8 +19,9 @@ public class MeasureController : MonoBehaviour
     private void MeasureSpeed(object obj)
     {
         Vector2 input = (Vector2)obj;
+        _tweenRotate?.Kill();
         //Debug.Log("rotate");
-        transform.DOLocalRotate(new Vector3(0, 0, (input == Vector2.zero) ? 180f : -180f), _duration, RotateMode.WorldAxisAdd);
+        _tweenRotate = transform.DOLocalRotate(new Vector3(0, 0, (input == Vector2.zero) ? 180f : -180f), _duration, RotateMode.WorldAxisAdd);
     }
 
     private void OnDestroy()

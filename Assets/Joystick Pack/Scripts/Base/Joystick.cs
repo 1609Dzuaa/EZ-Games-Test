@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static GameEnums;
 
 public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
@@ -40,8 +41,16 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
     [HideInInspector] public Vector2 input = Vector2.zero;
 
+    protected virtual void Awake()
+    {
+        EventsManager.Instance.Subscribe(EventID.OnAllowToPlay, DisplayJoystick);
+        //Debug.Log("Sub Joystick");
+    }
+
     protected virtual void Start()
     {
+        EventsManager.Instance.Notify(EventID.OnSendJoystick, this);
+        //Debug.Log("Noti Joystick");
         HandleRange = handleRange;
         DeadZone = deadZone;
         baseRect = GetComponent<RectTransform>();
@@ -55,7 +64,12 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         handle.anchorMax = center;
         handle.pivot = center;
         handle.anchoredPosition = Vector2.zero;
+        gameObject.SetActive(false);
     }
+
+    private void DisplayJoystick(object obj) => gameObject.SetActive(true);
+
+    private void OnDestroy() => EventsManager.Instance.Unsubscribe(EventID.OnAllowToPlay, DisplayJoystick);
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {

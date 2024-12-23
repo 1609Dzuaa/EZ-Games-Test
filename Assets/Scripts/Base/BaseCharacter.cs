@@ -10,6 +10,7 @@ public class BaseCharacter : MonoBehaviour
 
     protected Animator _anim;
     protected Rigidbody _rb;
+    protected BaseState _state;
 
     public Animator Anim => _anim;
 
@@ -23,9 +24,21 @@ public class BaseCharacter : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
     }
 
+    public void ChangeState(BaseState state)
+    {
+        _state?.Exit();
+        _state = state;
+        _state.Enter(this);
+    }
+
     // Update is called once per frame
     protected virtual void Update()
     {
-        
+        _state?.Update();
+    }
+
+    protected virtual void FixedUpdate()
+    {
+        _state?.FixedUpdate();
     }
 }

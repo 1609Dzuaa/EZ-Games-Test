@@ -15,6 +15,14 @@ public class UIReadyController : MonoBehaviour
 
     void Start()
     {
+        EventsManager.Instance.Subscribe(EventID.OnStartCount, StartCountdown);
+        Countdown(); //tạm thời để test
+    }
+
+    private void StartCountdown(object obj) => Countdown();
+
+    private void Countdown()
+    {
         Tween tweenScaleText = _txtGuide.transform.DOScale(Vector3.one * _scaleFactor, _scaleDuration).SetLoops(-1, LoopType.Yoyo);
         tweenScaleText.Play();
         DOTween.To(() => countdown, x => countdown = x, END_VALUE_COUNTDOWN, _countDuration).OnUpdate(() =>
@@ -30,5 +38,9 @@ public class UIReadyController : MonoBehaviour
         });
     }
 
+    private void OnDestroy()
+    {
+        EventsManager.Instance.Unsubscribe(EventID.OnStartCount, StartCountdown);
+    }
     
 }

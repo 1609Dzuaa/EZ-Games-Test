@@ -15,6 +15,8 @@ public static class GameEnums
         OnSendPosition, //gửi vị trí của player, wave cho MapSlider
         OnRevive,
         OnUpdatePlayerSpeed, //update speed của player khi đã countdown xong
+        OnSendJoystick,
+        OnStartCount, //cho phép đếm ngược
 
     }
 
@@ -35,6 +37,15 @@ public static class GameEnums
     {
         StaminaPrefab,
         SpeedPrefab,
+
+    }
+
+    public enum EPlayerState
+    {
+        Idle = 0,
+        LookBehind = 1,
+        Celebrate = 2,
+        Run = 3,
 
     }
 }

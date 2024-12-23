@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +13,28 @@ public static class GameConstants
     #endregion
 
     #region Range
+
     public const float NEAR_ZERO_THRESHOLD = 0.01f;
+    public const float JOYSTICK_THRESHOLD_MIN = 0.1f; //Ngưỡng tối thiểu mà joystick đc coi là moving
+
+    #endregion
+
+    #region Tags
+
+    public const string WAVE_TAG = "Wave";
+    public const string CAT_TAG = "Cat";
+
+    #endregion
+
+    #region Animation Parameters
+
+    public const string STATE = "state";
+
+    #endregion
+
+    #region Numbers
+
+    public const float REVERSE_AXIS_FACTOR = -1.0f;
+
     #endregion
 }

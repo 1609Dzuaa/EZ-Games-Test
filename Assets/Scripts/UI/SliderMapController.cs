@@ -22,8 +22,7 @@ public class SliderMapController : MonoBehaviour
     [Header("Tính bằng độ dài trục x của Map")]
     [SerializeField] float _mapLength;
 
-    [Header("Player, Wave ref")]
-    [SerializeField] Transform _player, _wave;
+    Transform _player, _wave;
 
     [Header("Sliders")]
     [SerializeField] Slider _playerSlider, _waveSlider;
