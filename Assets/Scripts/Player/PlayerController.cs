@@ -7,16 +7,17 @@ using static GameConstants;
 public class PlayerController : BaseCharacter
 {
     [HideInInspector] public Joystick joyStick;
-    [SerializeField] float _smoothRotateTime;
+    [SerializeField] float _smoothRotateTime, _upgradeSpeedDuration;
     [SerializeField] float _radius, _angleIndex;
     [SerializeField] Transform _left, _right;
     [SerializeField] LayerMask _catLayer;
-    float _horizontal, _vertical, _maxSpeed;
+    float _horizontal, _vertical, _maxSpeed, _upgradeSpeedTimer, _initialSpeed;
     List<int> _listCatsRescued;
     Collider[] _arrCatCols;
     HashSet<Collider> _hashCat;
-    bool _isMoving = false;
+    bool _isMoving = false, _hasDebuffed;
     Vector3 _input;
+    float _maxPositionX;
 
     #region States
 
@@ -81,9 +82,11 @@ public class PlayerController : BaseCharacter
 
     private void UpdatePlayerSpeed(object obj)
     {
+        _initialSpeed = _speed;
         _speed += (float)obj;
         _maxSpeed = _speed; //speed lúc này là cực đại
-        //Debug.Log("updateSpeed: " + _speed);
+        _upgradeSpeedTimer = Time.time;
+        //Debug.Log("maxSpeed: " + _maxSpeed);
     }
 
     private void CacheJoystick(object obj) => joyStick = (Joystick)obj;
@@ -95,12 +98,23 @@ public class PlayerController : BaseCharacter
         base.Update();
         ReadInput();
         MeasureSpeed();
+        DebuffSpeed();
+        MeasureMaxPostionX();
+        BlockMovement();
     }
 
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
         //TrackCat();
+    }
+
+    private void BlockMovement()
+    {
+        if (transform.position.z > MAX_WIDTH_OF_MAP)
+            transform.position = new Vector3(transform.position.x, transform.position.y, MAX_WIDTH_OF_MAP);
+        else if (transform.position.z < MIN_WIDTH_OF_MAP)
+            transform.position = new Vector3(transform.position.x, transform.position.y, MIN_WIDTH_OF_MAP);
     }
 
     private void ReadInput()
@@ -117,13 +131,14 @@ public class PlayerController : BaseCharacter
         if (other.CompareTag(WAVE_TAG))
         {
             UIManager.Instance.TogglePopup(true, EPopupID.Again);
+            //Debug.Log("maxX: " + _maxPositionX);
             EventsManager.Instance.Notify(EventID.OnReceiveResult, new ResultParams
             {
                 Result = EResult.Failed,
                 Rescued = _listCatsRescued.Count,
-                Timer = 0,
+                Timer = (int)Time.time,
                 MaxSpeed = _maxSpeed,
-                Money = 0
+                Money = _listCatsRescued.Count * BOUNTY_EACH_CAT + _maxPositionX * BOUNTY_EACH_METTER
             });
             //Debug.Log("You lose");
         }
@@ -136,21 +151,7 @@ public class PlayerController : BaseCharacter
             Debug.Log("have cat");
         for (int i = 0; i < arrCols.Length; i++)
         {
-            //Check dựa trên bán kính của cái quạt
-            if (IsInsideSector(arrCols[i].transform.position, transform.position, _left.position, _right.position, _radius * _radius))
-            {
-                Debug.Log("Cat in");
-            }
         }
-    }
-
-    public bool IsInsideSector(Vector3 point, Vector3 center, Vector3 sectorStart, Vector3 sectorEnd, float radiusSquared)
-    {
-        Vector3 relPoint = new Vector3(point.x - center.x, point.z - center.z);
-
-        return !AreClockwise(sectorStart, relPoint) &&
-               AreClockwise(sectorEnd, relPoint) &&
-               IsWithinRadius(relPoint, radiusSquared);
     }
 
     private void MeasureSpeed()
@@ -172,14 +173,20 @@ public class PlayerController : BaseCharacter
         }
     }
 
-    private bool AreClockwise(Vector3 v1, Vector3 v2)
+    private void DebuffSpeed()
     {
-        return -v1.x * v2.z + v1.z * v2.x > 0;
+        if (Time.time - _upgradeSpeedTimer >= _upgradeSpeedDuration && !_hasDebuffed)
+        {
+            _hasDebuffed = true;
+            _speed = _initialSpeed;
+            //Debug.Log("debuff " + _speed);
+        }
     }
 
-    private bool IsWithinRadius(Vector3 v, float radiusSquared)
+    private void MeasureMaxPostionX()
     {
-        return v.x * v.x + v.z * v.z <= radiusSquared;
+        if (transform.position.x > _maxPositionX)
+            _maxPositionX = transform.position.x;
     }
 
     private void OnDrawGizmos()

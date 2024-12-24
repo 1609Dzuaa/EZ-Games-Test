@@ -13,11 +13,13 @@ public struct PopupUI
 public class UIManager : BaseSingleton<UIManager>
 {
     [SerializeField] PopupUI[] _popupUIs;
+    [SerializeField] GameObject _measureComponents;
     Dictionary<EPopupID, PopupUI> _dictPopupUIs = new Dictionary<EPopupID, PopupUI>();
 
     protected override void Awake()
     {
         base.Awake();
+        EventsManager.Instance.Subscribe(EventID.OnReceiveResult, HideMeasureComponents);
     }
 
     private void Start()
@@ -31,7 +33,10 @@ public class UIManager : BaseSingleton<UIManager>
 
     private void OnDestroy()
     {
+        EventsManager.Instance.Unsubscribe(EventID.OnReceiveResult, HideMeasureComponents);
     }
+
+    private void HideMeasureComponents(object obj) => _measureComponents.SetActive(false);
 
     public void TogglePopup(bool isShow, EPopupID popupID)
     {

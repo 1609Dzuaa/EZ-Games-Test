@@ -560,10 +560,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PopupAgain, Assembly-CSharp
-        m_MethodName: ButtonOnClick
-        m_Mode: 3
+      - m_Target: {fileID: 8342052964934211935}
+        m_TargetAssemblyTypeName: PopupResult, Assembly-CSharp
+        m_MethodName: OnClose
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -805,7 +805,8 @@ MonoBehaviour:
   _txtRescued: {fileID: 2721355030629246102}
   _txtTimer: {fileID: 3013153664678615601}
   _txtSpeed: {fileID: 7590471180080341010}
-  _txtGet: {fileID: 1600937930821268261}
+  _txtGetNormal: {fileID: 723122387788330893}
+  _txtGetTriple: {fileID: 1600937930821268261}
 --- !u!1 &2809814209462212812
 GameObject:
   m_ObjectHideFlags: 0
@@ -1847,7 +1848,7 @@ GameObject:
   - component: {fileID: 5933893075406045345}
   - component: {fileID: 1600937930821268261}
   m_Layer: 5
-  m_Name: TextGet
+  m_Name: TextGetTriple
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1983,7 +1984,7 @@ GameObject:
   - component: {fileID: 723122387788330893}
   - component: {fileID: 5599456863985013574}
   m_Layer: 5
-  m_Name: TextNothanks
+  m_Name: TextGetNormal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

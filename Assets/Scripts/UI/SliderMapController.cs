@@ -22,11 +22,13 @@ public class SliderMapController : MonoBehaviour
     [Header("Tính bằng độ dài trục x của Map")]
     [SerializeField] float _mapLength;
 
-    Transform _player, _wave;
-
     [Header("Sliders")]
     [SerializeField] Slider _playerSlider, _waveSlider;
+    Transform _player, _wave;
     float _startLinePositionX;
+    List<CatInfor> _listCats;
+    [SerializeField] Slider _catSliderPrefab;
+    [SerializeField] GameObject _playerRef;
 
     // Start is called before the first frame update
     void Awake()
@@ -34,6 +36,7 @@ public class SliderMapController : MonoBehaviour
         _waveSlider.value = SLIDER_MIN_VALUE;
         _playerSlider.value = SLIDER_NEAR_ZERO;
         EventsManager.Instance.Subscribe(EventID.OnSendPosition, CachePosition);
+        EventsManager.Instance.Subscribe(EventID.OnCatSendPosition, AddCat);
         //_startLinePositionX = _player.position.x; //là startLine trong design file
     }
 
@@ -53,13 +56,26 @@ public class SliderMapController : MonoBehaviour
         }
     }
 
+    private void AddCat(object obj)
+    {
+        if (_listCats == null)
+            _listCats = new List<CatInfor>();
+        CatInfor catAdded = new CatInfor(_listCats.Count, (float)obj);
+        Slider catIcon = Instantiate(_catSliderPrefab, transform);
+        catIcon.transform.position = transform.position;
+        catIcon.value = ((float)obj - _startLinePositionX) / _mapLength;
+        //Debug.Log("Cat Val: " + catIcon.value);
+        _listCats.Add(catAdded);
+    }
+
     private void OnDestroy()
     {
         EventsManager.Instance.Unsubscribe(EventID.OnSendPosition, CachePosition);
+        EventsManager.Instance.Unsubscribe(EventID.OnCatSendPosition, AddCat);
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         UpdateSliders();
     }
@@ -72,6 +88,7 @@ public class SliderMapController : MonoBehaviour
             //Debug.Log("pX: " + _player.position.x);
 
             _playerSlider.value = (_player.position.x - _startLinePositionX) / _mapLength;
+            //Debug.Log("PT, PL: " + _playerRef.transform.position + ", " + _playerRef.transform.localPosition);
             //Debug.Log("rateP: " + _playerSlider.value);
         }
         if (_wave.position.x >= _startLinePositionX)

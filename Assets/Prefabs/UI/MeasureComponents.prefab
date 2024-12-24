@@ -1358,11 +1358,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mapLength: 100
-  _startLinePositionX: 0
-  _player: {fileID: 0}
-  _wave: {fileID: 0}
   _playerSlider: {fileID: 4144679460097948010}
   _waveSlider: {fileID: 2149287517070263672}
+  _catSliderPrefab: {fileID: 7775279681789466624, guid: 5e787810c238cf84183379b90284d8a3,
+    type: 3}
+  _playerRef: {fileID: 7712056410063043309}
 --- !u!1 &7651302359806262999
 GameObject:
   m_ObjectHideFlags: 0

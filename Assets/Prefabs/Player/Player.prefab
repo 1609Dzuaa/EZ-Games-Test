@@ -21,7 +21,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &541159252302556280
 Transform:
   m_ObjectHideFlags: 0
@@ -150,9 +150,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 10
-  _joyStick: {fileID: 0}
-  _rotationSpeed: 0.5
-  _speedFactor: 1
+  joyStick: {fileID: 0}
+  _smoothRotateTime: 0
+  _upgradeSpeedDuration: 0
   _radius: 120
   _angleIndex: 0
   _left: {fileID: 1486068570922883396}

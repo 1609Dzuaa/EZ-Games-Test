@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using static GameEnums;
+using static GameConstants;
 
 public struct ResultParams
 {
@@ -11,12 +12,14 @@ public struct ResultParams
     public int Rescued;
     public int Timer;
     public float MaxSpeed;
-    public int Money;
+    public float Money;
 }
 
 public class PopupResult : PopupController
 {
-    [SerializeField] TextMeshProUGUI _txtResult, _txtRescued, _txtTimer, _txtSpeed, _txtGet;
+    [SerializeField]
+    TextMeshProUGUI _txtResult, _txtRescued, _txtTimer,
+        _txtSpeed, _txtGetNormal, _txtGetTriple;
     const int GET_TRIPLE = 0;
     const int GET_NORMAL = 1;
 
@@ -32,8 +35,9 @@ public class PopupResult : PopupController
         _txtResult.text = resultParams.Result == EResult.Completed ? "Completed!" : "Failed!";
         _txtRescued.text = resultParams.Rescued.ToString() + "/5";
         _txtTimer.text = ConvertTimer(resultParams.Timer);
-        _txtSpeed.text = resultParams.MaxSpeed.ToString();
-        _txtGet.text = "GET " + ConvertMoney(resultParams.Money);
+        _txtSpeed.text = $"{resultParams.MaxSpeed:0.0} m/s";
+        _txtGetNormal.text = "No Thanks, Get " + ConvertMoney(resultParams.Money);
+        _txtGetTriple.text = "GET " + ConvertMoney(resultParams.Money * TRIPLE_REWARD);
     }
 
     private string ConvertTimer(int timer)
@@ -45,9 +49,9 @@ public class PopupResult : PopupController
         return formattedTime;
     }
 
-    private string ConvertMoney(int money)
+    private string ConvertMoney(float money)
     {
-        string formattedMoney = money.ToString();
+        string formattedMoney = $"{money:0.00}";
 
         if (money >= 1000)
         {
@@ -74,5 +78,10 @@ public class PopupResult : PopupController
                 Debug.Log("Get Normal");
                 break;
         }
+    }
+
+    public void OnClose()
+    {
+        GameManager.Instance.ReloadScene();
     }
 }

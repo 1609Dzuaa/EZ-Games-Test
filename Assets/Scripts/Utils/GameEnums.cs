@@ -17,6 +17,8 @@ public static class GameEnums
         OnUpdatePlayerSpeed, //update speed của player khi đã countdown xong
         OnSendJoystick,
         OnStartCount, //cho phép đếm ngược
+        OnCatSendPosition, //mỗi con mèo gửi vị trí lúc bắt đầu game để hiển thị trên map
+        OnCatRescued, //cứu đc mèo thì xoá icon mèo đó, giảm stamina, vận tốc
 
     }
 

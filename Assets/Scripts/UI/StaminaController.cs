@@ -26,7 +26,7 @@ public class StaminaController : MonoBehaviour
     [SerializeField] Slider _sliderStamina;
     [SerializeField] Image _imageSlider;
     [SerializeField] Transform _staminaSpawn;
-    float _decreasePrefab, _initialStamina, _decreaseStamina, _cacheIncrease;
+    float _decreasePrefab, _initialStamina, _decreaseStamina, _cacheIncrease, _recoverTimer;
     bool _allowDecrease = true;
     int _countTouch = 0;
     const float DECREASE_EACH_COUNT_FACTOR = 10.0f;
@@ -63,7 +63,35 @@ public class StaminaController : MonoBehaviour
     {
         _allowDecrease = false;
         EventsManager.Instance.Notify(EventID.OnUpdatePlayerSpeed, _cacheIncrease * _countTouch);
+        StartCoroutine(RecoverStamina());
     }
+
+    private IEnumerator RecoverStamina()
+    {
+        float duration = Mathf.Floor((_initialStamina - _stamina) / _decreasePrefab);
+        _recoverTimer = Time.time;
+        //Debug.Log("need " + duration + "s to finish recover");
+
+        //Debug.Log("current: " + _stamina + ", init: " + _initialStamina);
+
+        while (_stamina < _initialStamina)
+        {
+            //Debug.Log("inside loop, b4 check");
+            if (Time.time - _recoverTimer >= A_SECOND)
+            {
+                _stamina += _decreasePrefab;
+                _stamina = Mathf.Min(_stamina, _initialStamina);
+
+                _txtStamina.text = ((int)_stamina).ToString() + "/" + _initialStamina.ToString();
+                _imageSlider.DOFillAmount(_stamina / _initialStamina, _tweenDuration);
+
+                _recoverTimer = Time.time;
+            }
+
+            yield return null;
+        }
+    }
+
 
     // Update is called once per frame
     void Update()

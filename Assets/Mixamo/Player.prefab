@@ -177,9 +177,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: facdfa382fc3b5543acb00ac16b5ccc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 1
+  _speed: 10
   joyStick: {fileID: 0}
   _smoothRotateTime: 0.1
+  _upgradeSpeedDuration: 4
   _radius: 1
   _angleIndex: 0
   _left: {fileID: 0}
