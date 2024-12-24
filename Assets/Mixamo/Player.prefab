@@ -179,7 +179,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 1
   joyStick: {fileID: 0}
-  _rotationSpeed: 0.1
+  _smoothRotateTime: 0.1
   _radius: 1
   _angleIndex: 0
   _left: {fileID: 0}

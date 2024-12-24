@@ -38,20 +38,19 @@ public class PlayerRunState : BaseState
         //và phải đảo dấu trục z để phù hợp.
         _pController.Input = new Vector3(_pController.Vertical, 0f, _pController.Horizontal * REVERSE_AXIS_FACTOR);
         _pController.Input.Normalize();
-        _pController.Direction = _pController.transform.TransformDirection(_pController.Input);
-        Debug.Log("Input, newPos: " + _pController.Input + ", " + _pController.transform.position + _pController.Input * _pController.Speed * Time.deltaTime);
-        _pController.Rb.MovePosition(_pController.transform.position + _pController.Direction * _pController.Speed * Time.deltaTime);
+        //Debug.Log("Input, newPos: " + _pController.Input + ", " + _pController.transform.position + _pController.Input * _pController.Speed * Time.deltaTime);
+        _pController.Rb.MovePosition(_pController.transform.position + _pController.Input * _pController.Speed * Time.deltaTime);
 
         //Debug.Log("Input: " + _pController.Input);
-        //Debug.Log("dir, Input: " + _pController.Direction + "; " + _pController.Input);
 
         if (_pController.Input.normalized != Vector3.zero)
         {
             float targetAngle = Mathf.Atan2(_pController.Horizontal, _pController.Vertical) * Mathf.Rad2Deg;
-            targetAngle += 90f;
-            var angle = Mathf.SmoothDampAngle(_pController.transform.eulerAngles.y, targetAngle, ref currentVelocity, _pController.RotationSpeed);
-            Quaternion targetRotation = Quaternion.Euler(0, angle, 0);
-            _pController.transform.rotation = targetRotation;
+            //Debug.Log("target b4 add: " + targetAngle);
+            targetAngle += 90f; //thêm 90 độ do Unity Unit Circle lệch 90 (có thể +- nên phải thử)
+            //Debug.Log("targetANgle: " + targetAngle);
+            float angle = Mathf.SmoothDampAngle(_pController.transform.eulerAngles.y, targetAngle, ref currentVelocity, _pController.SmoothRotateTime);
+            _pController.transform.rotation = Quaternion.Euler(0, angle, 0);
         }
     }
 }

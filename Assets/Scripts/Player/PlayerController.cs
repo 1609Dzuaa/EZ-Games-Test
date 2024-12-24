@@ -7,7 +7,7 @@ using static GameConstants;
 public class PlayerController : BaseCharacter
 {
     [HideInInspector] public Joystick joyStick;
-    [SerializeField] float _rotationSpeed;
+    [SerializeField] float _smoothRotateTime;
     [SerializeField] float _radius, _angleIndex;
     [SerializeField] Transform _left, _right;
     [SerializeField] LayerMask _catLayer;
@@ -16,7 +16,7 @@ public class PlayerController : BaseCharacter
     Collider[] _arrCatCols;
     HashSet<Collider> _hashCat;
     bool _isMoving = false;
-    Vector3 _input, _prevInput, _direction;
+    Vector3 _input;
 
     #region States
 
@@ -31,15 +31,11 @@ public class PlayerController : BaseCharacter
 
     public Vector3 Input { get => _input; set => _input = value; }
 
-    public Vector3 PreviousInput { get => _prevInput; set => _prevInput = value; }
-
-    public Vector3 Direction { get => _direction; set => _direction = value; }
-
     public float Horizontal { get => _horizontal; set => _horizontal = value; }
 
     public float Vertical { get => _vertical; set => _vertical = value; }
 
-    public float RotationSpeed { get => _rotationSpeed; set => _rotationSpeed = value; }
+    public float SmoothRotateTime { get => _smoothRotateTime; set => _smoothRotateTime = value; }
 
     #endregion
 
@@ -113,7 +109,7 @@ public class PlayerController : BaseCharacter
 
         _horizontal = joyStick.Horizontal;
         _vertical = joyStick.Vertical;
-        Debug.Log("H, V: " + _horizontal + "," + _vertical);
+        //Debug.Log("H, V: " + _horizontal + "," + _vertical);
     }
 
     private void OnTriggerEnter(Collider other)
