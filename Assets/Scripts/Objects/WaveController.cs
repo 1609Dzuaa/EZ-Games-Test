@@ -14,19 +14,19 @@ public class WaveController : BaseCharacter
     protected override void Awake()
     {
         base.Awake();
-        EventsManager.Instance.Subscribe(EventID.OnSendPosition, CacheInitialPlayerPos);
         _boxCol = GetComponent<BoxCollider>();
     }
 
     private void Start()
     {
-        EventsManager.Instance.Notify(EventID.OnSendPosition, new MapSlider
+        EventsManager.Notify(EventID.OnSendPosition, new MapSlider
         {
             PlayerPos = null,
             WavePos = transform
         });
-        EventsManager.Instance.Subscribe(EventID.OnReceiveResult, StopMoving);
-        EventsManager.Instance.Subscribe(EventID.OnRevive, Revive);
+        EventsManager.Subscribe(EventID.OnReceiveResult, StopMoving);
+        EventsManager.Subscribe(EventID.OnRevive, Revive);
+        EventsManager.Subscribe(EventID.OnSendPosition, CacheInitialPlayerPos);
     }
 
     private void StopMoving(object obj)
@@ -48,7 +48,7 @@ public class WaveController : BaseCharacter
     {
         _canMove = true;
         transform.position = _initialPlayerPos;
-        UIManager.Instance.TogglePopup(false, EPopupID.Again);
+        UIManager.Instance?.TogglePopup(false, EPopupID.Again);
         StartCoroutine(DelayEnableBoxCol());
     }
 
@@ -60,9 +60,9 @@ public class WaveController : BaseCharacter
 
     private void OnDestroy()
     {
-        EventsManager.Instance.Unsubscribe(EventID.OnReceiveResult, StopMoving);
-        EventsManager.Instance.Unsubscribe(EventID.OnSendPosition, CacheInitialPlayerPos);
-        EventsManager.Instance.Unsubscribe(EventID.OnRevive, Revive);
+        EventsManager.Unsubscribe(EventID.OnReceiveResult, StopMoving);
+        EventsManager.Unsubscribe(EventID.OnSendPosition, CacheInitialPlayerPos);
+        EventsManager.Unsubscribe(EventID.OnRevive, Revive);
     }
 
     protected override void Update()

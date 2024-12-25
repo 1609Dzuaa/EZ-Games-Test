@@ -12,9 +12,9 @@ public class PlayerCelebrateState : BaseState
     {
         base.Enter(controller);
         _pController = (PlayerController)_controller;
-        _pController.Rb.velocity = Vector3.zero;
+        //_pController.Rb.velocity = Vector3.zero;
         _pController.Anim.SetInteger(STATE, (int)EPlayerState.Celebrate);
-        Debug.Log("Celeb");
+        //Debug.Log("Celeb");
     }
 
     override public void Exit() { }

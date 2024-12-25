@@ -17,13 +17,14 @@ public class StaminaPrefab : MonoBehaviour
     bool _isFirstOnEnable = true;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
-        EventsManager.Instance.Subscribe(EventID.OnUpgradeSpeed, ShowDecrease);
     }
 
     private void OnEnable()
     {
+        EventsManager.Subscribe(EventID.OnUpgradeSpeed, ShowDecrease);
+
         if (_isFirstOnEnable)
         {
             _isFirstOnEnable = false;
@@ -41,6 +42,7 @@ public class StaminaPrefab : MonoBehaviour
         float endValueX = transform.position.x - _moveDistanceX;
         float endValueY = transform.position.y - _moveDistanceY;
         Vector3 endValue = new Vector3(endValueX, endValueY, transform.position.z);
+
         transform.DOMove(endValue, _fadeDuration);
 
         sequence.OnComplete(() =>
@@ -71,6 +73,7 @@ public class StaminaPrefab : MonoBehaviour
 
     private void OnDisable()
     {
+        EventsManager.Unsubscribe(EventID.OnUpgradeSpeed, ShowDecrease);
         transform.DOScale(Vector3.one, _fadeDuration);
         transform.position = _initialPos;
     }
@@ -79,10 +82,5 @@ public class StaminaPrefab : MonoBehaviour
     {
         StaminaSpeed sp = (StaminaSpeed)obj;
         _txtDecrease.text = sp.StaminaDecrease.ToString();
-    }
-
-    private void OnDestroy()
-    {
-        EventsManager.Instance.Unsubscribe(EventID.OnUpgradeSpeed, ShowDecrease);
     }
 }

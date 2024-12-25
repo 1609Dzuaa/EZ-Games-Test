@@ -44,25 +44,26 @@ public class StaminaController : MonoBehaviour
         _decreasePrefab = _stamina / DECREASE_EACH_COUNT_FACTOR;
         _decreaseStamina = _decreasePrefab * STAMINA_DECREASE_EACH_COUNT_FACTOR;
         _sliderStamina.value = SLIDER_MAX_VALUE;
-        EventsManager.Instance.Subscribe(EventID.OnAllowToPlay, StopDecrease);
+        EventsManager.Subscribe(EventID.OnAllowToPlay, StopDecrease);
     }
 
     private void Start()
     {
         _cacheIncrease = _decreasePrefab * SPEED_INCREASE_EACH_COUNT_FACTOR;
         StaminaSpeed sp = new StaminaSpeed(_decreasePrefab, _cacheIncrease);
-        EventsManager.Instance.Notify(EventID.OnUpgradeSpeed, sp);
+        EventsManager.Notify(EventID.OnUpgradeSpeed, sp);
+        //Debug.Log("Noti upgrade");
     }
 
     private void OnDestroy()
     {
-        EventsManager.Instance.Unsubscribe(EventID.OnAllowToPlay, StopDecrease);
+        EventsManager.Unsubscribe(EventID.OnAllowToPlay, StopDecrease);
     }
 
     private void StopDecrease(object obj)
     {
         _allowDecrease = false;
-        EventsManager.Instance.Notify(EventID.OnUpdatePlayerSpeed, _cacheIncrease * _countTouch);
+        EventsManager.Notify(EventID.OnUpdatePlayerSpeed, _cacheIncrease * _countTouch);
         StartCoroutine(RecoverStamina());
     }
 
@@ -106,6 +107,9 @@ public class StaminaController : MonoBehaviour
                 {
                     _stamina -= (_decreasePrefab * STAMINA_DECREASE_EACH_COUNT_FACTOR);
                     _stamina = Mathf.Clamp(_stamina, MIN_STAMINA_ENABLED, _initialStamina);
+                    if (_imageSlider == null)
+                        Debug.Log("Tween null update Stamina contr");
+                    if (_imageSlider != null)
                     _imageSlider.DOFillAmount(_stamina / _initialStamina, _tweenDuration);
                     _txtStamina.text = _stamina.ToString() + "/" + _initialStamina.ToString();
                     SpawnPrefab(EPoolable.StaminaPrefab, _staminaSpawn.position);
@@ -126,7 +130,7 @@ public class StaminaController : MonoBehaviour
         {
             string id = prefab.GetComponent<SpeedPrefab>().PrefabID;
             Speed sp = new Speed(id, _countTouch);
-            EventsManager.Instance.Notify(EventID.OnIncreaseSpeed, sp);
+            EventsManager.Notify(EventID.OnIncreaseSpeed, sp);
         }
     }
 }

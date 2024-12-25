@@ -1,6 +1,8 @@
+﻿using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using static GameEnums;
 
 [System.Serializable]
@@ -13,13 +15,19 @@ public struct PopupUI
 public class UIManager : BaseSingleton<UIManager>
 {
     [SerializeField] PopupUI[] _popupUIs;
-    [SerializeField] GameObject _measureComponents;
+    [SerializeField] GameObject _measureComponents, _readyController;
+    [SerializeField] Image _imageTransition;
+    [SerializeField] float _distance, _duration;
+
+    [Header("Delay việc reload để chờ load scene")]
+    [SerializeField] float _delayReload;
     Dictionary<EPopupID, PopupUI> _dictPopupUIs = new Dictionary<EPopupID, PopupUI>();
+    Vector3 _initialPos;
 
     protected override void Awake()
     {
         base.Awake();
-        EventsManager.Instance.Subscribe(EventID.OnReceiveResult, HideMeasureComponents);
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
@@ -29,14 +37,20 @@ public class UIManager : BaseSingleton<UIManager>
             _popupUIs[i].PopupPrefab.SetActive(false);
             _dictPopupUIs.Add(_popupUIs[i].PopupID, _popupUIs[i]);
         }
+        _initialPos = _imageTransition.transform.localPosition;
+        EventsManager.Subscribe(EventID.OnReceiveResult, HideMeasureComponents);
+        EventsManager.Notify(EventID.OnStartCount);
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
-        EventsManager.Instance.Unsubscribe(EventID.OnReceiveResult, HideMeasureComponents);
+        base.OnDestroy();
+        EventsManager.Unsubscribe(EventID.OnReceiveResult, HideMeasureComponents);
     }
 
     private void HideMeasureComponents(object obj) => _measureComponents.SetActive(false);
+
+    private void ShowMeasureComponents(object obj) => _measureComponents.SetActive(true);
 
     public void TogglePopup(bool isShow, EPopupID popupID)
     {
@@ -46,5 +60,32 @@ public class UIManager : BaseSingleton<UIManager>
                 popup.PopupPrefab.SetActive(false);
             _dictPopupUIs[popupID].PopupPrefab.SetActive(isShow);
         }
+    }
+
+    public void TransitionAndSwitchScene()
+    {
+        float endValue = _imageTransition.transform.localPosition.x - _distance;
+        _imageTransition.transform.DOLocalMoveX(endValue, _duration).OnComplete(() =>
+        {
+            float endValue2 = _imageTransition.transform.localPosition.x - _distance;
+            //Debug.Log("Middile: " + _imageTransition.transform.localPosition);
+            GameManager.Instance?.ReloadScene();
+            StartCoroutine(DelayReload());
+            _measureComponents.SetActive(true);
+
+            _imageTransition.transform.DOLocalMoveX(endValue2, _duration).OnComplete(() =>
+            {
+                _imageTransition.transform.localPosition = _initialPos;
+                _readyController.SetActive(true);
+                EventsManager.Notify(EventID.OnStartCount);
+                //Debug.Log("Done");
+            });
+        });
+    }
+
+    private IEnumerator DelayReload()
+    {
+        yield return new WaitForSeconds(_delayReload);
+        EventsManager.Notify(EventID.OnReloadLevel);
     }
 }

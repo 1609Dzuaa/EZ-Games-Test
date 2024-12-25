@@ -32,15 +32,16 @@ public class SpeedPrefab : MonoBehaviour
     float _cacheIncrease = 0;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
-        EventsManager.Instance.Subscribe(EventID.OnUpgradeSpeed, CacheBaseIncrease);
-        EventsManager.Instance.Subscribe(EventID.OnIncreaseSpeed, IncreaseSpeed);
-        PrefabID = Guid.NewGuid().ToString();
     }
 
     private void OnEnable()
     {
+        EventsManager.Subscribe(EventID.OnUpgradeSpeed, CacheBaseIncrease);
+        EventsManager.Subscribe(EventID.OnIncreaseSpeed, IncreaseSpeed);
+        PrefabID = Guid.NewGuid().ToString();
+
         if (_isFirstOnEnable)
         {
             _isFirstOnEnable = false;
@@ -62,11 +63,15 @@ public class SpeedPrefab : MonoBehaviour
         {
             //move
             endValue = new(transform.position.x + _moveDistanceX, transform.position.y + _moveDistanceY, transform.position.z);
-            transform.DOMove(endValue, _fadeDuration);
+            if (transform != null)
+                transform.DOMove(endValue, _fadeDuration);
 
             //fade
-            _txtIncrease.DOFade(FADE_OUT, _fadeDuration).SetEase(_ease);
-            _icon.DOFade(FADE_OUT, _fadeDuration).SetEase(_ease);
+            if (_txtIncrease != null && _icon != null)
+            {
+                _txtIncrease.DOFade(FADE_OUT, _fadeDuration).SetEase(_ease);
+                _icon.DOFade(FADE_OUT, _fadeDuration).SetEase(_ease);
+            }
 
             //scale
             StartCoroutine(DelayScale());
@@ -85,6 +90,8 @@ public class SpeedPrefab : MonoBehaviour
 
     private void OnDisable()
     {
+        EventsManager.Unsubscribe(EventID.OnUpgradeSpeed, CacheBaseIncrease);
+        EventsManager.Unsubscribe(EventID.OnIncreaseSpeed, IncreaseSpeed);
         transform.DOScale(Vector3.one, _fadeDuration);
         transform.position = _initialPos;
     }
@@ -101,11 +108,5 @@ public class SpeedPrefab : MonoBehaviour
         if (PrefabID != speed.ID) return;
 
         _txtIncrease.text = (_cacheIncrease + _cacheIncrease * speed.TouchCount).ToString();
-    }
-
-    private void OnDestroy()
-    {
-        EventsManager.Instance.Unsubscribe(EventID.OnUpgradeSpeed, CacheBaseIncrease);
-        EventsManager.Instance.Subscribe(EventID.OnIncreaseSpeed, IncreaseSpeed);
     }
 }

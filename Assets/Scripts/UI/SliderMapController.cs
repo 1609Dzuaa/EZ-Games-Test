@@ -31,12 +31,12 @@ public class SliderMapController : MonoBehaviour
     [SerializeField] GameObject _playerRef;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
         _waveSlider.value = SLIDER_MIN_VALUE;
         _playerSlider.value = SLIDER_NEAR_ZERO;
-        EventsManager.Instance.Subscribe(EventID.OnSendPosition, CachePosition);
-        EventsManager.Instance.Subscribe(EventID.OnCatSendPosition, AddCat);
+        EventsManager.Subscribe(EventID.OnSendPosition, CachePosition);
+        EventsManager.Subscribe(EventID.OnCatSendPosition, AddCat);
         //_startLinePositionX = _player.position.x; //là startLine trong design file
     }
 
@@ -70,8 +70,8 @@ public class SliderMapController : MonoBehaviour
 
     private void OnDestroy()
     {
-        EventsManager.Instance.Unsubscribe(EventID.OnSendPosition, CachePosition);
-        EventsManager.Instance.Unsubscribe(EventID.OnCatSendPosition, AddCat);
+        EventsManager.Unsubscribe(EventID.OnSendPosition, CachePosition);
+        EventsManager.Unsubscribe(EventID.OnCatSendPosition, AddCat);
     }
 
     // Update is called once per frame
@@ -82,6 +82,8 @@ public class SliderMapController : MonoBehaviour
 
     private void UpdateSliders()
     {
+        if (_player == null || _wave == null) return;
+
         //vì bắt đầu count ở startLine(vị trí ban đầu Player) nên sẽ trừ đi 1 đoạn startLine
         if (_player.position.x > _startLinePositionX + NEAR_ZERO_THRESHOLD)
         {

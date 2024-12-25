@@ -13,10 +13,10 @@ public class PopupAgain : PopupController
         switch(index)
         {
             case BUTTON_CLOSE:
-                UIManager.Instance.TogglePopup(true, EPopupID.Result);
+                UIManager.Instance?.TogglePopup(true, EPopupID.Result);
                 break;
             case BUTTON_REVIVE:
-                EventsManager.Instance.Notify(EventID.OnRevive);
+                EventsManager.Notify(EventID.OnRevive);
                 break;
         }
     }

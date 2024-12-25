@@ -16,8 +16,8 @@ public static class GameConstants
 
     public const float NEAR_ZERO_THRESHOLD = 0.01f;
     public const float JOYSTICK_THRESHOLD_MIN = 0.1f; //Ngưỡng tối thiểu mà joystick đc coi là moving
-    public const float MAX_WIDTH_OF_MAP = 10.0f;
-    public const float MIN_WIDTH_OF_MAP = -10.0f;
+    public const float MAX_WIDTH_OF_MAP = 7.0f;
+    public const float MIN_WIDTH_OF_MAP = -7.0f;
 
     #endregion
 
@@ -41,6 +41,13 @@ public static class GameConstants
     public const float BOUNTY_EACH_CAT = 50.0f;
     public const float BOUNTY_EACH_METTER = 0.25f;
     public const float TRIPLE_REWARD = 3.0f;
+    public const float DEFAULT_VALUE_ZERO = 0.0f;
+
+    #endregion
+
+    #region File Path
+
+    public const string PATH_PREFAB_TO_LOAD = "PrefabToLoad";
 
     #endregion
 }

@@ -12,7 +12,7 @@ public class PlayerLookBehindState : BaseState
     {
         base.Enter(controller);
         _pController = (PlayerController)_controller;
-        _pController.Rb.velocity = Vector3.zero;
+        //_pController.Rb.velocity = Vector3.zero;
         _pController.Anim.SetInteger(STATE, (int)EPlayerState.LookBehind);
         //Debug.Log("LookBehind");
     }

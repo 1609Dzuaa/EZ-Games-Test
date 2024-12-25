@@ -43,13 +43,16 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
     protected virtual void Awake()
     {
-        EventsManager.Instance.Subscribe(EventID.OnAllowToPlay, DisplayJoystick);
+        //EventsManager.Subscribe(EventID.OnAllowToPlay, DisplayJoystick);
+        //EventsManager.Subscribe(EventID.OnReceiveResult, HideJoystick);
         //Debug.Log("Sub Joystick");
     }
 
     protected virtual void Start()
     {
-        EventsManager.Instance.Notify(EventID.OnSendJoystick, this);
+        EventsManager.Notify(EventID.OnSendJoystick, this);
+        EventsManager.Subscribe(EventID.OnAllowToPlay, DisplayJoystick);
+        EventsManager.Subscribe(EventID.OnReceiveResult, HideJoystick);
         //Debug.Log("Noti Joystick");
         HandleRange = handleRange;
         DeadZone = deadZone;
@@ -69,7 +72,13 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
     private void DisplayJoystick(object obj) => gameObject.SetActive(true);
 
-    private void OnDestroy() => EventsManager.Instance.Unsubscribe(EventID.OnAllowToPlay, DisplayJoystick);
+    private void HideJoystick(object obj) => gameObject.SetActive(false);
+
+    private void OnDestroy()
+    {
+        EventsManager.Unsubscribe(EventID.OnReceiveResult, HideJoystick);
+        EventsManager.Unsubscribe(EventID.OnAllowToPlay, DisplayJoystick);
+    }
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {

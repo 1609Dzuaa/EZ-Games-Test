@@ -44,19 +44,22 @@ public class PlayerController : BaseCharacter
     {
         base.Awake();
         _listCatsRescued = new List<int>();
-        EventsManager.Instance.Subscribe(EventID.OnDecreaseCat, DecreaseCat);
-        EventsManager.Instance.Subscribe(EventID.OnUpdatePlayerSpeed, UpdatePlayerSpeed);
-        EventsManager.Instance.Subscribe(EventID.OnSendJoystick, CacheJoystick);
-        EventsManager.Instance.Subscribe(EventID.OnStartCount, StartCelebrating);
     }
 
     private void Start()
     {
-        EventsManager.Instance.Notify(EventID.OnSendPosition, new MapSlider
+        EventsManager.Notify(EventID.OnSendPosition, new MapSlider
         {
             PlayerPos = transform,
             WavePos = null
         });
+
+        EventsManager.Subscribe(EventID.OnDecreaseCat, DecreaseCat);
+        EventsManager.Subscribe(EventID.OnUpdatePlayerSpeed, UpdatePlayerSpeed);
+        EventsManager.Subscribe(EventID.OnSendJoystick, CacheJoystick);
+        EventsManager.Subscribe(EventID.OnStartCount, StartCelebrating);
+
+        //Debug.Log("Sub Joystick");
 
         #region Init States
         IdleState = new();
@@ -69,10 +72,10 @@ public class PlayerController : BaseCharacter
 
     private void OnDestroy()
     {
-        EventsManager.Instance.Unsubscribe(EventID.OnDecreaseCat, DecreaseCat);
-        EventsManager.Instance.Unsubscribe(EventID.OnUpdatePlayerSpeed, UpdatePlayerSpeed);
-        EventsManager.Instance.Unsubscribe(EventID.OnSendJoystick, CacheJoystick);
-        EventsManager.Instance.Unsubscribe(EventID.OnStartCount, StartCelebrating);
+        EventsManager.Unsubscribe(EventID.OnDecreaseCat, DecreaseCat);
+        EventsManager.Unsubscribe(EventID.OnUpdatePlayerSpeed, UpdatePlayerSpeed);
+        EventsManager.Unsubscribe(EventID.OnSendJoystick, CacheJoystick);
+        EventsManager.Unsubscribe(EventID.OnStartCount, StartCelebrating);
     }
 
     private void DecreaseCat(object obj)
@@ -130,9 +133,9 @@ public class PlayerController : BaseCharacter
     {
         if (other.CompareTag(WAVE_TAG))
         {
-            UIManager.Instance.TogglePopup(true, EPopupID.Again);
+            UIManager.Instance?.TogglePopup(true, EPopupID.Again);
             //Debug.Log("maxX: " + _maxPositionX);
-            EventsManager.Instance.Notify(EventID.OnReceiveResult, new ResultParams
+            EventsManager.Notify(EventID.OnReceiveResult, new ResultParams
             {
                 Result = EResult.Failed,
                 Rescued = _listCatsRescued.Count,
@@ -162,13 +165,13 @@ public class PlayerController : BaseCharacter
         if (joyStick.input != Vector2.zero && !_isMoving)
         {
             _isMoving = true;
-            EventsManager.Instance.Notify(EventID.OnMeasureSpeed, joyStick.input);
+            EventsManager.Notify(EventID.OnMeasureSpeed, joyStick.input);
             //Debug.Log("noti1");
         }
         else if (joyStick.input == Vector2.zero && _isMoving)
         {
             _isMoving = false;
-            EventsManager.Instance.Notify(EventID.OnMeasureSpeed, joyStick.input);
+            EventsManager.Notify(EventID.OnMeasureSpeed, joyStick.input);
             //Debug.Log("noti2");
         }
     }

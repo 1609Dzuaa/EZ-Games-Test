@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -22,22 +22,22 @@ public class PopupResult : PopupController
         _txtSpeed, _txtGetNormal, _txtGetTriple;
     const int GET_TRIPLE = 0;
     const int GET_NORMAL = 1;
+    ResultParams _params;
 
-    protected override void Awake()
+    private void Start()
     {
-        base.Awake();
-        EventsManager.Instance.Subscribe(EventID.OnReceiveResult, OnReceiveResult);
+        EventsManager.Subscribe(EventID.OnReceiveResult, OnReceiveResult);
     }
 
     private void OnReceiveResult(object obj)
     {
-        ResultParams resultParams = (ResultParams)obj;
-        _txtResult.text = resultParams.Result == EResult.Completed ? "Completed!" : "Failed!";
-        _txtRescued.text = resultParams.Rescued.ToString() + "/5";
-        _txtTimer.text = ConvertTimer(resultParams.Timer);
-        _txtSpeed.text = $"{resultParams.MaxSpeed:0.0} m/s";
-        _txtGetNormal.text = "No Thanks, Get " + ConvertMoney(resultParams.Money);
-        _txtGetTriple.text = "GET " + ConvertMoney(resultParams.Money * TRIPLE_REWARD);
+        _params = (ResultParams)obj;
+        _txtResult.text = _params.Result == EResult.Completed ? "Completed!" : "Failed!";
+        _txtRescued.text = _params.Rescued.ToString() + "/5";
+        _txtTimer.text = ConvertTimer(_params.Timer);
+        _txtSpeed.text = $"{_params.MaxSpeed:0.0} m/s";
+        _txtGetNormal.text = "No Thanks, Get " + ConvertMoney(_params.Money);
+        _txtGetTriple.text = "GET " + ConvertMoney(_params.Money * TRIPLE_REWARD);
     }
 
     private string ConvertTimer(int timer)
@@ -64,7 +64,7 @@ public class PopupResult : PopupController
 
     private void OnDestroy()
     {
-        EventsManager.Instance.Unsubscribe(EventID.OnReceiveResult, OnReceiveResult);
+        EventsManager.Unsubscribe(EventID.OnReceiveResult, OnReceiveResult);
     }
 
     public void OnGetClick(int index)
@@ -82,6 +82,9 @@ public class PopupResult : PopupController
 
     public void OnClose()
     {
-        GameManager.Instance.ReloadScene();
+        //dựa trên param để quyết định switch next level hay replay
+        UIManager.Instance?.TogglePopup(false, _popupID);
+        UIManager.Instance?.TransitionAndSwitchScene();
+        //GameManager.Instance?.ReloadScene();
     }
 }

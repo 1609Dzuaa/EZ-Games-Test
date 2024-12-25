@@ -10,37 +10,42 @@ public class UIReadyController : MonoBehaviour
     [SerializeField] float _scaleDuration, _countDuration, _scaleFactor;
     [SerializeField] Ease _ease;
     [SerializeField] TextMeshProUGUI _txtCountdown, _txtGuide;
-    int countdown = 3;
+    float countdown;
     const int END_VALUE_COUNTDOWN = 0;
 
     void Start()
     {
-        EventsManager.Instance.Subscribe(EventID.OnStartCount, StartCountdown);
-        Countdown(); //tạm thời để test
+        EventsManager.Subscribe(EventID.OnStartCount, StartCountdown);
+        //Debug.Log("Start ready");
     }
 
-    private void StartCountdown(object obj) => Countdown();
+    private void StartCountdown(object obj)
+    {
+        Countdown();
+        //Debug.Log("start c");
+    }
 
     private void Countdown()
     {
+        countdown = _countDuration;
         Tween tweenScaleText = _txtGuide.transform.DOScale(Vector3.one * _scaleFactor, _scaleDuration).SetLoops(-1, LoopType.Yoyo);
         tweenScaleText.Play();
         DOTween.To(() => countdown, x => countdown = x, END_VALUE_COUNTDOWN, _countDuration).OnUpdate(() =>
         {
-            _txtCountdown.text = countdown.ToString();
+            _txtCountdown.text = ((int)countdown).ToString();
             //Debug.Log("timer: " + countdown);
         }).OnComplete(() =>
         {
             _txtGuide.transform.localScale = Vector3.one;
             tweenScaleText.Kill();
             gameObject.SetActive(false);
-            EventsManager.Instance.Notify(EventID.OnAllowToPlay);
+            EventsManager.Notify(EventID.OnAllowToPlay);
         });
     }
 
     private void OnDestroy()
     {
-        EventsManager.Instance.Unsubscribe(EventID.OnStartCount, StartCountdown);
+        EventsManager.Unsubscribe(EventID.OnStartCount, StartCountdown);
     }
-    
+
 }

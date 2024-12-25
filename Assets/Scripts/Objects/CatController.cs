@@ -20,14 +20,14 @@ public class CatController : BaseCharacter
 {
     private void Start()
     {
-        EventsManager.Instance.Notify(EventID.OnCatSendPosition, transform.position.x);
+        EventsManager.Notify(EventID.OnCatSendPosition, transform.position.x);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(WAVE_TAG))
         {
-            //EventsManager.Instance.Notify(EventID.OnDecreaseCat);
+            //EventsManager.Notify(EventID.OnDecreaseCat);
         }
     }
 }

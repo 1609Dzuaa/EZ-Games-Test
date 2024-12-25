@@ -19,6 +19,7 @@ public static class GameEnums
         OnStartCount, //cho phép đếm ngược
         OnCatSendPosition, //mỗi con mèo gửi vị trí lúc bắt đầu game để hiển thị trên map
         OnCatRescued, //cứu đc mèo thì xoá icon mèo đó, giảm stamina, vận tốc
+        OnReloadLevel, //reload lại level (thay đổi 1 vài obj)
 
     }
 

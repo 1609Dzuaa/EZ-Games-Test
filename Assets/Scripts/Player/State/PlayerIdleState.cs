@@ -10,7 +10,7 @@ public class PlayerIdleState : BaseState
     {
         base.Enter(controller);
         _pController = (PlayerController)_controller;
-        _pController.Rb.velocity = Vector3.zero;
+        //_pController.Rb.velocity = Vector3.zero;
         _pController.Anim.SetInteger(STATE, (int)EPlayerState.Idle);
         //Debug.Log("Idle");
     }

@@ -10,9 +10,9 @@ public class MeasureController : MonoBehaviour
     Tween _tweenRotate;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
-        EventsManager.Instance.Subscribe(EventID.OnMeasureSpeed, MeasureSpeed);
+        EventsManager.Subscribe(EventID.OnMeasureSpeed, MeasureSpeed);
         //Debug.Log("sub");
     }
 
@@ -26,6 +26,6 @@ public class MeasureController : MonoBehaviour
 
     private void OnDestroy()
     {
-        EventsManager.Instance.Unsubscribe(EventID.OnMeasureSpeed, MeasureSpeed);
+        EventsManager.Unsubscribe(EventID.OnMeasureSpeed, MeasureSpeed);
     }
 }
