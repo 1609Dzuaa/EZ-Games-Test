@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using static GameEnums;
 using static GameConstants;
+using UnityEngine.SceneManagement;
 
 public struct ResultParams
 {
@@ -83,8 +84,10 @@ public class PopupResult : PopupController
     public void OnClose()
     {
         //dựa trên param để quyết định switch next level hay replay
+        int currentLevel = SceneManager.GetActiveScene().buildIndex;
+        int nextLevel = currentLevel + 1;
         UIManager.Instance?.TogglePopup(false, _popupID);
-        UIManager.Instance?.TransitionAndSwitchScene();
+        UIManager.Instance?.TransitionAndSwitchScene((_params.Result == EResult.Failed) ? currentLevel : nextLevel);
         //GameManager.Instance?.ReloadScene();
     }
 }

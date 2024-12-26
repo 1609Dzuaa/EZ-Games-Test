@@ -3,19 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using static GameEnums;
 using static GameConstants;
+using Unity.Burst.CompilerServices;
 
 public class PlayerController : BaseCharacter
 {
     [HideInInspector] public Joystick joyStick;
     [SerializeField] float _smoothRotateTime, _upgradeSpeedDuration;
-    [SerializeField] float _radius, _angleIndex;
-    [SerializeField] Transform _left, _right;
+
+    [Header("Fan-shaped Related")]
+    [SerializeField] float _radius, _leftAngle, _rightAngle;
+    [SerializeField] LineRenderer _lineRenderer;
+
+    [Header("Check Cat Related")]
+    [SerializeField] int _steps, _raySteps, _rayCount;
     [SerializeField] LayerMask _catLayer;
+    [SerializeField] Transform _rayPos;
+
     float _horizontal, _vertical, _maxSpeed, _upgradeSpeedTimer, _initialSpeed;
     List<int> _listCatsRescued;
     Collider[] _arrCatCols;
-    HashSet<Collider> _hashCat;
-    bool _isMoving = false, _hasDebuffed;
+    HashSet<CatController> _hashCatFounded, _hashCatSaved;
+    bool _isMoving = false, _hasDebuffed, _foundCat;
     Vector3 _input;
     float _maxPositionX;
 
@@ -53,11 +61,15 @@ public class PlayerController : BaseCharacter
             PlayerPos = transform,
             WavePos = null
         });
+        _arrCatCols = new Collider[10];
+        _hashCatFounded = new HashSet<CatController>();
+        _hashCatSaved = new HashSet<CatController>();
 
         EventsManager.Subscribe(EventID.OnDecreaseCat, DecreaseCat);
         EventsManager.Subscribe(EventID.OnUpdatePlayerSpeed, UpdatePlayerSpeed);
         EventsManager.Subscribe(EventID.OnSendJoystick, CacheJoystick);
         EventsManager.Subscribe(EventID.OnStartCount, StartCelebrating);
+        EventsManager.Subscribe(EventID.OnCatRescued, HandleRescueCat);
 
         //Debug.Log("Sub Joystick");
 
@@ -68,6 +80,7 @@ public class PlayerController : BaseCharacter
         RunState = new();
         #endregion
         ChangeState(LookBehindState);
+        DrawFanXZ(_steps, _radius, _leftAngle, _rightAngle);
     }
 
     private void OnDestroy()
@@ -76,6 +89,7 @@ public class PlayerController : BaseCharacter
         EventsManager.Unsubscribe(EventID.OnUpdatePlayerSpeed, UpdatePlayerSpeed);
         EventsManager.Unsubscribe(EventID.OnSendJoystick, CacheJoystick);
         EventsManager.Unsubscribe(EventID.OnStartCount, StartCelebrating);
+        EventsManager.Unsubscribe(EventID.OnCatRescued, HandleRescueCat);
     }
 
     private void DecreaseCat(object obj)
@@ -96,6 +110,13 @@ public class PlayerController : BaseCharacter
 
     private void StartCelebrating(object obj) => ChangeState(CelebrateState);
 
+    private void HandleRescueCat(object obj)
+    {
+        CatController catRescued = (CatController)obj;
+        _hashCatFounded.Remove(catRescued);
+        _hashCatFounded.Add(catRescued);
+    }
+
     protected override void Update()
     {
         base.Update();
@@ -104,12 +125,12 @@ public class PlayerController : BaseCharacter
         DebuffSpeed();
         MeasureMaxPostionX();
         BlockMovement();
+        TrackCat();
     }
 
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-        //TrackCat();
     }
 
     private void BlockMovement()
@@ -133,7 +154,7 @@ public class PlayerController : BaseCharacter
     {
         if (other.CompareTag(WAVE_TAG))
         {
-            UIManager.Instance?.TogglePopup(true, EPopupID.Again);
+            UIManager.Instance.TogglePopup(true, EPopupID.Again);
             //Debug.Log("maxX: " + _maxPositionX);
             EventsManager.Notify(EventID.OnReceiveResult, new ResultParams
             {
@@ -149,12 +170,50 @@ public class PlayerController : BaseCharacter
 
     private void TrackCat()
     {
-        Collider[] arrCols = Physics.OverlapSphere(transform.position, _radius, _catLayer);
-        if (arrCols.Length > 0)
-            Debug.Log("have cat");
-        for (int i = 0; i < arrCols.Length; i++)
+        //bắn multiple ray từ vị trí rayPos để track mèo
+        //các ray đc bắn có độ dài rayLength và hướng != nhau
+        //na ná đh kim
+        //https://www.mathsisfun.com/geometry/unit-circle.html
+        //dựa vào sin, cos để tính 
+
+        _foundCat = false;
+        for (int i = 0; i < _rayCount; i++)
         {
+            //mỗi ray cách nhau 1 angleStep
+            float angleStep = (_leftAngle - _rightAngle) / _raySteps;
+            float currentAngle = _rightAngle + angleStep * i;
+            Vector3 direction = new Vector3(Mathf.Sin(Mathf.Deg2Rad * currentAngle), 0f, Mathf.Cos(Mathf.Deg2Rad * currentAngle));
+
+            if (Physics.Raycast(_rayPos.position, direction, out RaycastHit hit, _radius, _catLayer))
+            {
+                Debug.DrawRay(_rayPos.position, direction * _radius, Color.green);
+                _foundCat = true;
+                _lineRenderer.enabled = true;
+                CatController catDetected = hit.transform.GetComponent<CatController>();
+                if (!_hashCatFounded.Contains(catDetected) && !_hashCatSaved.Contains(catDetected))
+                {
+                    _hashCatFounded.Add(catDetected);
+                    EventsManager.Notify(EventID.OnDiscovered, catDetected.ID);
+                    Debug.Log("add cat to hashFound: " + catDetected.name);
+                }
+            }
+            else
+            {
+                Debug.DrawRay(_rayPos.position, direction * _radius, Color.red);
+            }
         }
+
+        if (!_foundCat)
+        {
+            _lineRenderer.enabled = false;
+            foreach (var cat in _hashCatFounded)
+            {
+                Debug.Log("cat " + cat.name + " out range");
+                EventsManager.Notify(EventID.OnCatOutRange, cat.ID);
+            }
+            _hashCatFounded.Clear();
+        }
+        //Debug.Log("tracking");
     }
 
     private void MeasureSpeed()
@@ -194,16 +253,28 @@ public class PlayerController : BaseCharacter
 
     private void OnDrawGizmos()
     {
-        //Gizmos.DrawLine(transform.position, _left.position);
-        //Gizmos.DrawLine(transform.position, _right.position);
-        //Gizmos.DrawWireSphere
-        /*for (int i = 0; i < 6; i++)
+        //Gizmos.DrawSphere(transform.position, _radius);
+    }
+
+    //modify hàm DrawCircle bên cat 1 tí
+    private void DrawFanXZ(int steps, float radius, float startAngle, float endAngle)
+    {
+        _lineRenderer.positionCount = steps + 2;
+        float angleRange = Mathf.Deg2Rad * (endAngle - startAngle);
+
+        for (int i = 0; i < steps; i++)
         {
-            float xOffset = Mathf.Sin(i + _angleIndex * Mathf.Rad2Deg) * _radius;
-            float zOffset = Mathf.Cos(i + _angleIndex * Mathf.Rad2Deg) * _radius;
-            Vector3 newPos = new Vector3(transform.position.x + xOffset, transform.position.y, transform.position.z + zOffset);
-            Gizmos.DrawLine(transform.position, newPos);
-        }*/
+            float progress = (float)i / steps;
+
+            float currentRad = Mathf.Deg2Rad * startAngle + progress * angleRange;
+
+            float x = Mathf.Cos(currentRad) * radius;
+            float z = Mathf.Sin(currentRad) * radius;
+
+            _lineRenderer.SetPosition(i + 1, new Vector3(x, 0f, z));
+        }
+
+        _lineRenderer.SetPosition(steps + 1, Vector3.zero);
     }
 
     #region Animation Event Related

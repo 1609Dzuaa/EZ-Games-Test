@@ -42,6 +42,7 @@ public static class GameConstants
     public const float BOUNTY_EACH_METTER = 0.25f;
     public const float TRIPLE_REWARD = 3.0f;
     public const float DEFAULT_VALUE_ZERO = 0.0f;
+    public const float DEFAULT_VALUE_ONE = 1.0f;
 
     #endregion
 

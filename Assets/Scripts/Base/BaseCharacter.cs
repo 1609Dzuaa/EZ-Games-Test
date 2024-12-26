@@ -12,9 +12,9 @@ public class BaseCharacter : MonoBehaviour
     protected Rigidbody _rb;
     protected BaseState _state;
 
-    public Animator Anim => _anim;
+    public Animator Anim { get => _anim; set => _anim = value; }
 
-    public Rigidbody Rb => _rb;
+    public Rigidbody Rb { get => _rb; set => _rb = value; }
 
     public float Speed => _speed;
 

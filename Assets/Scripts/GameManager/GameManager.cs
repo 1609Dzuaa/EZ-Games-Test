@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,9 +19,10 @@ public class GameManager : BaseSingleton<GameManager>
     {
     }
 
-    public void ReloadScene()
+    public void LoadScene(int sceneIndex)
     {
         //SceneManager.sceneLoaded += ReloadObject;
+        //load lại scene nhưng bắn event config scene dựa trên level
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

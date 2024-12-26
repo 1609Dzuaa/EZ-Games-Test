@@ -24,19 +24,23 @@ public class SliderMapController : MonoBehaviour
 
     [Header("Sliders")]
     [SerializeField] Slider _playerSlider, _waveSlider;
+    [SerializeField] Slider _catSliderPrefab;
+    [SerializeField] GameObject _playerRef;
+
     Transform _player, _wave;
     float _startLinePositionX;
     List<CatInfor> _listCats;
-    [SerializeField] Slider _catSliderPrefab;
-    [SerializeField] GameObject _playerRef;
+    Dictionary<CatController, Slider> _dictCatSliders;
 
     // Start is called before the first frame update
     void Start()
     {
         _waveSlider.value = SLIDER_MIN_VALUE;
         _playerSlider.value = SLIDER_NEAR_ZERO;
+        _dictCatSliders = new Dictionary<CatController, Slider>();
         EventsManager.Subscribe(EventID.OnSendPosition, CachePosition);
         EventsManager.Subscribe(EventID.OnCatSendPosition, AddCat);
+        EventsManager.Subscribe(EventID.OnCatRescued, RemoveCat);
         //_startLinePositionX = _player.position.x; //là startLine trong design file
     }
 
@@ -60,18 +64,26 @@ public class SliderMapController : MonoBehaviour
     {
         if (_listCats == null)
             _listCats = new List<CatInfor>();
-        CatInfor catAdded = new CatInfor(_listCats.Count, (float)obj);
+        CatInfor catAdded = (CatInfor)obj;
         Slider catIcon = Instantiate(_catSliderPrefab, transform);
         catIcon.transform.position = transform.position;
-        catIcon.value = ((float)obj - _startLinePositionX) / _mapLength;
-        //Debug.Log("Cat Val: " + catIcon.value);
+        catIcon.value = (catAdded.PositionX - _startLinePositionX) / _mapLength;
         _listCats.Add(catAdded);
+        _dictCatSliders.Add(catAdded.Controller, catIcon);
+        Debug.Log("Cat add: " + catAdded.Controller.gameObject.name);
+    }
+
+    private void RemoveCat(object obj)
+    {
+        Destroy(_dictCatSliders[(CatController)obj].gameObject);
+        Debug.Log("remove cat:" + (CatController)obj + "out of Slider Map");
     }
 
     private void OnDestroy()
     {
         EventsManager.Unsubscribe(EventID.OnSendPosition, CachePosition);
         EventsManager.Unsubscribe(EventID.OnCatSendPosition, AddCat);
+        EventsManager.Unsubscribe(EventID.OnCatRescued, RemoveCat);
     }
 
     // Update is called once per frame

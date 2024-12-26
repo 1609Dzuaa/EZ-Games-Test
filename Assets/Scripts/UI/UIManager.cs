@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static GameEnums;
 
@@ -62,14 +63,14 @@ public class UIManager : BaseSingleton<UIManager>
         }
     }
 
-    public void TransitionAndSwitchScene()
+    public void TransitionAndSwitchScene(int sceneIndex)
     {
         float endValue = _imageTransition.transform.localPosition.x - _distance;
         _imageTransition.transform.DOLocalMoveX(endValue, _duration).OnComplete(() =>
         {
             float endValue2 = _imageTransition.transform.localPosition.x - _distance;
             //Debug.Log("Middile: " + _imageTransition.transform.localPosition);
-            GameManager.Instance?.ReloadScene();
+            GameManager.Instance.LoadScene(sceneIndex);
             StartCoroutine(DelayReload());
             _measureComponents.SetActive(true);
 

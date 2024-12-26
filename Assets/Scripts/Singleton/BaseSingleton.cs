@@ -3,17 +3,11 @@ using UnityEngine;
 public abstract class BaseSingleton<T> : MonoBehaviour where T : MonoBehaviour
 {
     protected static T _instance = null;
-    protected static bool _isDestroy = false;
 
     public static T Instance
     {
         get
-        {
-            /*if (_isDestroy)
-            {
-                return null;
-            }*/    
-
+        { 
             if (!_instance)
             {
                 if (FindObjectOfType<T>() != null)
@@ -52,6 +46,5 @@ public abstract class BaseSingleton<T> : MonoBehaviour where T : MonoBehaviour
 
     protected virtual void OnDestroy()
     {
-        _isDestroy = true;
     }
 }

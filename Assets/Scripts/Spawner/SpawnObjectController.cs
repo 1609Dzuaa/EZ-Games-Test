@@ -98,6 +98,7 @@ public class SpawnObjectController : BaseSingleton<SpawnObjectController>
             _hashObjPrevRound.Clear();
             foreach (var index in _listIndexPrevRound) _hashObjPrevRound.Add(index);
         }
+        BakeMesh.Instance.Rebaking();
     }
 
     private void SetPositionAndRotation(ref GameObject go)
