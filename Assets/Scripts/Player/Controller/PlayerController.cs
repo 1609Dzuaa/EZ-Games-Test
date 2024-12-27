@@ -153,6 +153,7 @@ public class PlayerController : BaseCharacter
         MeasureMaxPostionX();
         BlockMovement();
         TrackCat();
+        Debug.Log("Speed: " + _speed);
     }
 
     protected override void FixedUpdate()

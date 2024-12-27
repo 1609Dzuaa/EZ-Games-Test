@@ -17,8 +17,8 @@ public static class GameConstants
     public const float NEAR_ZERO_THRESHOLD_2 = 0.1f;
     public const float NEAR_ZERO_THRESHOLD = 0.01f;
     public const float JOYSTICK_THRESHOLD_MIN = 0.1f; //Ngưỡng tối thiểu mà joystick đc coi là moving
-    public const float MAX_WIDTH_OF_MAP = 7.0f;
-    public const float MIN_WIDTH_OF_MAP = -7.0f;
+    public const float MAX_WIDTH_OF_MAP = 6.5f;
+    public const float MIN_WIDTH_OF_MAP = -6.5f;
     public const float CAT_STOPPING_DISTANCE = 0.7f;
 
     #endregion

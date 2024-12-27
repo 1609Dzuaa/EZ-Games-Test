@@ -32,14 +32,15 @@ public class SpeedPrefab : MonoBehaviour
     float _cacheIncrease = 0;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        EventsManager.Subscribe(EventID.OnUpgradeSpeed, CacheBaseIncrease);
+        EventsManager.Subscribe(EventID.OnIncreaseSpeed, IncreaseSpeed);
+        Debug.Log("speed Regis upgrade");
     }
 
     private void OnEnable()
     {
-        EventsManager.Subscribe(EventID.OnUpgradeSpeed, CacheBaseIncrease);
-        EventsManager.Subscribe(EventID.OnIncreaseSpeed, IncreaseSpeed);
         PrefabID = Guid.NewGuid().ToString();
 
         if (_isFirstOnEnable)
@@ -88,7 +89,7 @@ public class SpeedPrefab : MonoBehaviour
         });
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         EventsManager.Unsubscribe(EventID.OnUpgradeSpeed, CacheBaseIncrease);
         EventsManager.Unsubscribe(EventID.OnIncreaseSpeed, IncreaseSpeed);
@@ -100,6 +101,7 @@ public class SpeedPrefab : MonoBehaviour
     {
         StaminaSpeed sp = (StaminaSpeed)obj;
         _cacheIncrease = sp.SpeedIncrease;
+        Debug.Log("cache INcre: " + _cacheIncrease);
     }
 
     private void IncreaseSpeed(object obj)

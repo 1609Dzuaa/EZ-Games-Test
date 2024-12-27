@@ -17,14 +17,14 @@ public class StaminaPrefab : MonoBehaviour
     bool _isFirstOnEnable = true;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        EventsManager.Subscribe(EventID.OnUpgradeSpeed, ShowDecrease);
+        Debug.Log("stami Regis upgrade");
     }
 
     private void OnEnable()
     {
-        EventsManager.Subscribe(EventID.OnUpgradeSpeed, ShowDecrease);
-
         if (_isFirstOnEnable)
         {
             _isFirstOnEnable = false;
@@ -71,7 +71,7 @@ public class StaminaPrefab : MonoBehaviour
         });
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         EventsManager.Unsubscribe(EventID.OnUpgradeSpeed, ShowDecrease);
         transform.DOScale(Vector3.one, _fadeDuration);

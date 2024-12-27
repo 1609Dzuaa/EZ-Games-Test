@@ -52,7 +52,7 @@ public class StaminaController : MonoBehaviour
         _cacheIncrease = _decreasePrefab * SPEED_INCREASE_EACH_COUNT_FACTOR;
         StaminaSpeed sp = new StaminaSpeed(_decreasePrefab, _cacheIncrease);
         EventsManager.Notify(EventID.OnUpgradeSpeed, sp);
-        //Debug.Log("Noti upgrade");
+        Debug.Log("SMC Noti upgrade");
     }
 
     private void OnDestroy()
