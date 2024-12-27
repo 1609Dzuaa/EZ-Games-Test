@@ -35,7 +35,7 @@ public struct CatNavMeshInfor
 public class CatController : BaseCharacter
 {
     //nhớ tống 1 vài cái chung chung vào SO
-    [SerializeField] float _radius, _patienceDuration, _tweenDuration, _rotateSpeed;
+    [SerializeField] float _radius, _patienceDuration, _tweenDuration;
     [SerializeField] int _segment;
     [SerializeField] LineRenderer _lineRenderer;
     [SerializeField] Image _patienceFill;
@@ -162,6 +162,7 @@ public class CatController : BaseCharacter
     private void DisplayRange(object obj)
     {
         if (obj == null) return;
+        if (!_lineRenderer) return; //called too soon>????
 
         CatInfor info = (CatInfor)obj;
         if (ID != info.Controller.ID)
