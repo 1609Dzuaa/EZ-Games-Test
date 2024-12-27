@@ -13,7 +13,7 @@ public class CatIdleState : BaseState
         base.Enter(controller);
         _cController = (CatController)_controller;
         _cController.Anim.SetInteger(STATE, (int)ECatState.Idle);
-        Debug.Log("Cat Idle");
+        //Debug.Log("Cat Idle");
     }
 
     public override void Exit()

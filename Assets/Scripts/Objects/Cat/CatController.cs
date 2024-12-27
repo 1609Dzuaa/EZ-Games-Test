@@ -20,10 +20,22 @@ public struct CatInfor
     }
 }
 
+public struct CatNavMeshInfor
+{
+    public string ID;
+    public Transform NewPos;
+
+    public CatNavMeshInfor(string id, Transform newPos)
+    {
+        ID = id;
+        NewPos = newPos;
+    }
+}
+
 public class CatController : BaseCharacter
 {
     //nhớ tống 1 vài cái chung chung vào SO
-    [SerializeField] float _radius, _patienceDuration, _tweenDuration;
+    [SerializeField] float _radius, _patienceDuration, _tweenDuration, _rotateSpeed;
     [SerializeField] int _segment;
     [SerializeField] LineRenderer _lineRenderer;
     [SerializeField] Image _patienceFill;
@@ -31,7 +43,9 @@ public class CatController : BaseCharacter
     [SerializeField] NavMeshAgent _agent;
     [HideInInspector] public string ID;
     float _initialSpeed, _initialDuration;
+    bool _hasSetPath, _followPlayer, _isRescued;
     Tween _tweenFill;
+    Transform _newPos;
 
     #region States
     public CatIdleState IdleState;
@@ -49,6 +63,7 @@ public class CatController : BaseCharacter
         EventsManager.Notify(EventID.OnCatSendPosition, new CatInfor(this, transform.position.x));
         EventsManager.Subscribe(EventID.OnDiscovered, RunFromPlayer);
         EventsManager.Subscribe(EventID.OnCatOutRange, KillTween);
+        EventsManager.Subscribe(EventID.OnCatBackToPlayer, MoveToPlayer);
         IdleState = new CatIdleState();
         RunState = new CatRunState();
         ChangeState(RunState);
@@ -59,14 +74,24 @@ public class CatController : BaseCharacter
     {
         EventsManager.Unsubscribe(EventID.OnDiscovered, RunFromPlayer);
         EventsManager.Unsubscribe(EventID.OnCatOutRange, KillTween);
+        EventsManager.Unsubscribe(EventID.OnCatBackToPlayer, MoveToPlayer);
     }
 
     private void RunFromPlayer(object obj)
     {
         if ((string)obj != ID) return;
 
+        if (!_hasSetPath)
+        {
+            _agent.SetDestination(new Vector3(150f, DEFAULT_VALUE_ZERO, DEFAULT_VALUE_ZERO));
+            _hasSetPath = true;
+        }
+        //else return;
+
+        //Debug.Log("run");
+        if (_isRescued) return; //prevent maybe being called again ?????
+
         _patienceBar.SetActive(true);
-        _agent.SetDestination(new Vector3(150f, 0f, 0f));
         _tweenFill = DOTween.To(() => _patienceDuration, x => _patienceDuration = x, 0, _patienceDuration)
             .OnUpdate(() =>
             {
@@ -75,10 +100,16 @@ public class CatController : BaseCharacter
             }).OnComplete(() =>
             {
                 //về vs sen
+                //do bắn event trc r mới reset path nên bug
+                if (_agent.enabled)
+                {
+                    _agent.ResetPath();
+                    //Debug.Log("Reset Path");
+                }
+                _isRescued = true;
                 _patienceBar.SetActive(false);
                 EventsManager.Notify(EventID.OnCatRescued, this);
-                _agent.ResetPath();
-                Debug.Log("Save success cat: " + name);
+                //Debug.Log("Save success cat: " + name);
             });
         ChangeState(RunState);
         _speed = _initialSpeed;
@@ -96,17 +127,87 @@ public class CatController : BaseCharacter
         //Debug.Log("fill: " + _patienceFill.fillAmount);
     }
 
+    private void MoveToPlayer(object obj)
+    {
+        CatNavMeshInfor catInfo = (CatNavMeshInfor)obj;
+        if (catInfo.ID != ID) return;
+
+        Vector3 newPosition = catInfo.NewPos.position;
+        if (newPosition.y > NEAR_ZERO_THRESHOLD_2)
+        {
+            _agent.enabled = false;
+            ChangeState(IdleState);
+            transform.position = newPosition;
+            //Debug.Log("Cat on top");
+        }
+        else
+        {
+            _newPos = catInfo.NewPos;
+            _agent.ResetPath();
+            _agent.SetDestination(newPosition);
+            //Debug.Log("cat back to: " + newPosition);
+        }
+    }
+
     protected override void Update()
     {
         base.Update();
+        FollowPlayer();
+        //Debug.Log("pos: " + transform.position);
         //DrawCircleXZ(_segment, _radius);
+    }
+
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+        //_rb.WakeUp();
+    }
+
+    private void FollowPlayer()
+    {
+        if (!_isRescued) return;
+
+        if (!_followPlayer)
+        {
+            if (!_agent.hasPath)
+            {
+                _followPlayer = true;
+                //Debug.Log("allow follow player");
+                //lúc này đã về vị trí đứng trong hàng,
+                //cho phép đi theo
+            }
+            return;
+        }
+
+        if (!_agent.enabled) return; //vs mèo on top
+
+        _agent.SetDestination(_newPos.position);
+        _agent.stoppingDistance = CAT_STOPPING_DISTANCE;
+
+        //Debug.Log("pathEnd, pos, dis: " + _agent.pathEndPosition + ", " + transform.position + ", " + Vector3.Distance(_agent.pathEndPosition, transform.position));
+        if (Vector3.Distance(_agent.pathEndPosition, transform.position) <= CAT_STOPPING_DISTANCE)
+            ChangeState(IdleState);
+        else
+            ChangeState(RunState);
+
+        //distance quá nhỏ thì cho về idle
+        //0 thì run
+        //path luôn đc set
+        //set stop distance để phòng th ở run state mãi do agent ch đến đích
+        //Debug.Log("Cat update, path, state: " + _agent.hasPath + ", " + _state);
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        //Debug.Log("ENTERsleep, collider: " + _rb.IsSleeping() + ", " + other.gameObject.name);
         if (other.CompareTag(WAVE_TAG))
         {
-            //EventsManager.Notify(EventID.OnDecreaseCat);
+            Debug.Log("cat destroyed");
+            EventsManager.Notify(EventID.OnDecreaseCat, this);
+        }
+        else if (other.CompareTag("Player"))
+        {
+            Debug.Log("sen im here");
         }
     }
 

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4411243024809336598}
   m_Layer: 3
   m_Name: ExclamationMark
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 7420590714501357464}
   m_Layer: 3
   m_Name: Tail_1
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 7441794456572878051}
   m_Layer: 3
   m_Name: R_Leg1
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -152,7 +152,7 @@ GameObject:
   - component: {fileID: 5002846816177522447}
   m_Layer: 3
   m_Name: Fill
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 1398731825431679407}
   m_Layer: 3
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 2361899666076662978}
   m_Layer: 3
   m_Name: R_Leg1_1
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -296,7 +296,7 @@ GameObject:
   - component: {fileID: 7750069747078823842}
   m_Layer: 3
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -394,13 +394,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 27093172565510858}
-  - component: {fileID: -1717664334503889095}
   - component: {fileID: 7778468121543960317}
   - component: {fileID: 7906468306411970157}
   - component: {fileID: 1711954356423348768}
+  - component: {fileID: 1944456386347954104}
+  - component: {fileID: 7414818990146734405}
   m_Layer: 3
   m_Name: Animal Cat 01
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -415,40 +416,13 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.22, y: 0.22, z: 0.22}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7918532226583801500}
   - {fileID: 1375944192404018488}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &-1717664334503889095
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3723217540529644781}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!195 &7778468121543960317
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -462,7 +436,7 @@ NavMeshAgent:
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 100
   m_StoppingDistance: 0.7
   m_AutoTraverseOffMeshLink: 0
   m_AutoBraking: 0
@@ -487,6 +461,7 @@ MonoBehaviour:
   _radius: 5
   _patienceDuration: 1
   _tweenDuration: 0.07
+  _rotateSpeed: 2
   _segment: 60
   _lineRenderer: {fileID: 1711954356423348768}
   _patienceFill: {fileID: 5002846816177522447}
@@ -597,6 +572,54 @@ LineRenderer:
   m_UseWorldSpace: 0
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!65 &1944456386347954104
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3723217540529644781}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.3560985, y: 2.49199, z: 2.1725056}
+  m_Center: {x: 0.07072545, y: 0.74599427, z: 0.07717325}
+--- !u!54 &7414818990146734405
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3723217540529644781}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 64
+  m_CollisionDetection: 0
 --- !u!1 &3819351529795227812
 GameObject:
   m_ObjectHideFlags: 0
@@ -608,7 +631,7 @@ GameObject:
   - component: {fileID: 5505587060423426640}
   m_Layer: 3
   m_Name: L_Leg2_1
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -639,7 +662,7 @@ GameObject:
   - component: {fileID: 7084848676537427403}
   m_Layer: 3
   m_Name: R_Leg2_1
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -670,7 +693,7 @@ GameObject:
   - component: {fileID: 4752899404607629253}
   m_Layer: 3
   m_Name: Tail_2
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -701,7 +724,7 @@ GameObject:
   - component: {fileID: 8004256286070143272}
   m_Layer: 3
   m_Name: L_Leg2
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -733,7 +756,7 @@ GameObject:
   - component: {fileID: 8739457432995381817}
   m_Layer: 3
   m_Name: R_Leg2
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -765,7 +788,7 @@ GameObject:
   - component: {fileID: 6555748152536649546}
   m_Layer: 3
   m_Name: Cat_Root
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -799,7 +822,7 @@ GameObject:
   - component: {fileID: 5457884930473947466}
   m_Layer: 3
   m_Name: WhiteBG
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -872,7 +895,7 @@ GameObject:
   - component: {fileID: 9145494311930615066}
   m_Layer: 3
   m_Name: PatienceBar
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -909,7 +932,7 @@ GameObject:
   - component: {fileID: 6647801080927859840}
   m_Layer: 3
   m_Name: R_Ear
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -941,7 +964,7 @@ GameObject:
   - component: {fileID: 4252642487522260198}
   m_Layer: 3
   m_Name: Cat_1
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -995,7 +1018,7 @@ GameObject:
   - component: {fileID: 5789277937802789132}
   m_Layer: 3
   m_Name: L_Leg1_1
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1026,7 +1049,7 @@ GameObject:
   - component: {fileID: 2771647889990447805}
   m_Layer: 3
   m_Name: L_Leg1
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1060,7 +1083,7 @@ GameObject:
   - component: {fileID: 5201236407424948544}
   m_Layer: 3
   m_Name: Cat_1
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1165,7 +1188,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 1.1319592, y: 2.0689394, z: 3.0004878}
   m_Center: {x: -0.000000059604645, y: 1.0363587, z: -0.31026602}
@@ -1180,7 +1203,7 @@ GameObject:
   - component: {fileID: 3822022638071073186}
   m_Layer: 3
   m_Name: L_Ear
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1211,7 +1234,7 @@ GameObject:
   - component: {fileID: 459356253995378841}
   m_Layer: 3
   m_Name: Head
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

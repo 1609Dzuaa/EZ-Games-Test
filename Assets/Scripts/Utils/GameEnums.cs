@@ -22,6 +22,7 @@ public static class GameEnums
         OnReloadLevel, //reload lại level (thay đổi 1 vài obj)
         OnDiscovered, //mèo bị phát hiện => run
         OnCatOutRange, //mèo out range => reset fill cho mèo
+        OnCatBackToPlayer,
 
     }
 

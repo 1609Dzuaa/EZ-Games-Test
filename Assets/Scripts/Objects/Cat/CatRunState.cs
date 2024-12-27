@@ -13,7 +13,7 @@ public class CatRunState : BaseState
         base.Enter(controller);
         _cController = (CatController)_controller;
         _cController.Anim.SetInteger(STATE, (int)ECatState.Run);
-        Debug.Log("Run");
+        //Debug.Log("CatRun");
     }
 
     public override void Exit()

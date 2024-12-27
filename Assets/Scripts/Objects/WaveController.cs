@@ -35,6 +35,7 @@ public class WaveController : BaseCharacter
         _boxCol.enabled = false;
 
     }
+
     private void CacheInitialPlayerPos(object obj)
     {
         MapSlider mapSlider = (MapSlider)obj;

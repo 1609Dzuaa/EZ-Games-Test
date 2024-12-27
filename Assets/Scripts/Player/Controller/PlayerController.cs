@@ -18,6 +18,7 @@ public class PlayerController : BaseCharacter
     [SerializeField] int _steps, _raySteps, _rayCount;
     [SerializeField] LayerMask _catLayer;
     [SerializeField] Transform _rayPos;
+    [SerializeField] Transform[] _arrCatPosTop, _arrCatPosBehind;
 
     float _horizontal, _vertical, _maxSpeed, _upgradeSpeedTimer, _initialSpeed;
     List<int> _listCatsRescued;
@@ -26,6 +27,10 @@ public class PlayerController : BaseCharacter
     bool _isMoving = false, _hasDebuffed, _foundCat;
     Vector3 _input;
     float _maxPositionX;
+    int _indexPosBehind, _indexPosTop;
+
+    //cho giới hạn vị trí của mèo: phía sau thì cho tối đa 2 mèo theo sau
+    //còn lại ở trên đầu hết
 
     #region States
 
@@ -94,7 +99,14 @@ public class PlayerController : BaseCharacter
 
     private void DecreaseCat(object obj)
     {
-        _listCatsRescued.RemoveAt(_listCatsRescued.Count - 1);
+        CatController catDestroyed = (CatController)obj;
+        if (_hashCatSaved.Contains(catDestroyed))
+        {
+            //những con mèo theo sau mới bị trừ đi khỏi hash rescue
+            Destroy(catDestroyed.gameObject);
+            _hashCatSaved.Remove(catDestroyed);
+            Debug.Log("Cat " + catDestroyed.name + " get destroyed");
+        }
     }
 
     private void UpdatePlayerSpeed(object obj)
@@ -114,7 +126,22 @@ public class PlayerController : BaseCharacter
     {
         CatController catRescued = (CatController)obj;
         _hashCatFounded.Remove(catRescued);
-        _hashCatFounded.Add(catRescued);
+        _hashCatSaved.Add(catRescued);
+        int headOrBehind = Random.Range(0, 2);
+        if (headOrBehind < 1)
+        {
+            catRescued.transform.SetParent(transform);
+            //Debug.Log("currentY, CatposY: " + transform.position.y + ", " + catRescued.transform.position.y);
+
+            EventsManager.Notify(EventID.OnCatBackToPlayer, new CatNavMeshInfor(catRescued.ID, _arrCatPosTop[_indexPosTop]));
+            _indexPosTop++;
+        }
+        else
+        {
+            EventsManager.Notify(EventID.OnCatBackToPlayer, new CatNavMeshInfor(catRescued.ID, _arrCatPosBehind[_indexPosBehind]));
+            _indexPosBehind++;
+            //Debug.Log("cat back: " + newPos);
+        }
     }
 
     protected override void Update()
@@ -159,10 +186,10 @@ public class PlayerController : BaseCharacter
             EventsManager.Notify(EventID.OnReceiveResult, new ResultParams
             {
                 Result = EResult.Failed,
-                Rescued = _listCatsRescued.Count,
+                Rescued = _hashCatSaved.Count, //chết thì giữ mấy con trên đầu để tính điểm
                 Timer = (int)Time.time,
                 MaxSpeed = _maxSpeed,
-                Money = _listCatsRescued.Count * BOUNTY_EACH_CAT + _maxPositionX * BOUNTY_EACH_METTER
+                Money = _hashCatSaved.Count * BOUNTY_EACH_CAT + _maxPositionX * BOUNTY_EACH_METTER
             });
             //Debug.Log("You lose");
         }
@@ -190,11 +217,12 @@ public class PlayerController : BaseCharacter
                 _foundCat = true;
                 _lineRenderer.enabled = true;
                 CatController catDetected = hit.transform.GetComponent<CatController>();
-                if (!_hashCatFounded.Contains(catDetected) && !_hashCatSaved.Contains(catDetected))
+                if (!_hashCatFounded.Contains(catDetected) && !_hashCatSaved.Contains(catDetected) && catDetected != null)
                 {
                     _hashCatFounded.Add(catDetected);
+                    //if (catDetected == null) Debug.Log("catdetected null");
                     EventsManager.Notify(EventID.OnDiscovered, catDetected.ID);
-                    Debug.Log("add cat to hashFound: " + catDetected.name);
+                    //Debug.Log("add cat to hashFound: " + catDetected.name);
                 }
             }
             else
@@ -208,7 +236,8 @@ public class PlayerController : BaseCharacter
             _lineRenderer.enabled = false;
             foreach (var cat in _hashCatFounded)
             {
-                Debug.Log("cat " + cat.name + " out range");
+                if (cat == null) Debug.Log("cat null");
+                //Debug.Log("cat " + cat.name + " out range");
                 EventsManager.Notify(EventID.OnCatOutRange, cat.ID);
             }
             _hashCatFounded.Clear();

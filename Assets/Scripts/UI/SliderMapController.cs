@@ -70,13 +70,13 @@ public class SliderMapController : MonoBehaviour
         catIcon.value = (catAdded.PositionX - _startLinePositionX) / _mapLength;
         _listCats.Add(catAdded);
         _dictCatSliders.Add(catAdded.Controller, catIcon);
-        Debug.Log("Cat add: " + catAdded.Controller.gameObject.name);
+        //Debug.Log("Cat add: " + catAdded.Controller.gameObject.name);
     }
 
     private void RemoveCat(object obj)
     {
         Destroy(_dictCatSliders[(CatController)obj].gameObject);
-        Debug.Log("remove cat:" + (CatController)obj + "out of Slider Map");
+        //Debug.Log("remove cat:" + (CatController)obj + "out of Slider Map");
     }
 
     private void OnDestroy()
