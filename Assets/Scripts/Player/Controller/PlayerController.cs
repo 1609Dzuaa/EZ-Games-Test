@@ -306,6 +306,11 @@ public class PlayerController : BaseCharacter
 
     #region Animation Event Related
 
+    private void StartGame()
+    {
+        EventsManager.Notify(EventID.OnStartCount);
+    }
+
     private void BackToIdle()
     {
         ChangeState(IdleState);

@@ -16,6 +16,7 @@ public class UIReadyController : MonoBehaviour
     void Start()
     {
         EventsManager.Subscribe(EventID.OnStartCount, StartCountdown);
+        gameObject.SetActive(false);
         //Debug.Log("Start ready");
     }
 
@@ -27,6 +28,7 @@ public class UIReadyController : MonoBehaviour
 
     private void Countdown()
     {
+        gameObject.SetActive(true);
         countdown = _countDuration;
         Tween tweenScaleText = _txtGuide.transform.DOScale(Vector3.one * _scaleFactor, _scaleDuration).SetLoops(-1, LoopType.Yoyo);
         tweenScaleText.Play();

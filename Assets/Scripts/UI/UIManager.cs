@@ -40,7 +40,9 @@ public class UIManager : BaseSingleton<UIManager>
         }
         _initialPos = _imageTransition.transform.localPosition;
         EventsManager.Subscribe(EventID.OnReceiveResult, HideMeasureComponents);
-        EventsManager.Notify(EventID.OnStartCount);
+        //_measureComponents.SetActive(false);
+        //_readyController.SetActive(false);
+        //EventsManager.Notify(EventID.OnStartCount);
     }
 
     protected override void OnDestroy()

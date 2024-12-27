@@ -44,6 +44,7 @@ public class StaminaController : MonoBehaviour
         _decreasePrefab = _stamina / DECREASE_EACH_COUNT_FACTOR;
         _decreaseStamina = _decreasePrefab * STAMINA_DECREASE_EACH_COUNT_FACTOR;
         _sliderStamina.value = SLIDER_MAX_VALUE;
+        EventsManager.Subscribe(EventID.OnStartCount, DisplayUI);
         EventsManager.Subscribe(EventID.OnAllowToPlay, StopDecrease);
         EventsManager.Subscribe(EventID.OnReloadLevel, AllowToDecrease);
     }
@@ -53,14 +54,18 @@ public class StaminaController : MonoBehaviour
         _cacheIncrease = _decreasePrefab * SPEED_INCREASE_EACH_COUNT_FACTOR;
         StaminaSpeed sp = new StaminaSpeed(_decreasePrefab, _cacheIncrease);
         EventsManager.Notify(EventID.OnUpgradeSpeed, sp);
+        gameObject.SetActive(false);
         //Debug.Log("SMC Noti upgrade");
     }
 
     private void OnDestroy()
     {
+        EventsManager.Unsubscribe(EventID.OnStartCount, DisplayUI);
         EventsManager.Unsubscribe(EventID.OnAllowToPlay, StopDecrease);
         EventsManager.Subscribe(EventID.OnReloadLevel, AllowToDecrease);
     }
+
+    private void DisplayUI(object obj) => gameObject.SetActive(true);
 
     private void AllowToDecrease(object obj)
     {

@@ -39,11 +39,15 @@ public class SliderMapController : MonoBehaviour
         _waveSlider.value = SLIDER_MIN_VALUE;
         _playerSlider.value = SLIDER_NEAR_ZERO;
         _dictCatSliders = new Dictionary<CatController, Slider>();
+        EventsManager.Subscribe(EventID.OnStartCount, DisplayUI);
         EventsManager.Subscribe(EventID.OnSendPosition, CachePosition);
         EventsManager.Subscribe(EventID.OnCatSendPosition, AddCat);
         EventsManager.Subscribe(EventID.OnCatRescued, RemoveCat);
+        gameObject.SetActive(false);
         //_startLinePositionX = _player.position.x; //là startLine trong design file
     }
+
+    private void DisplayUI(object obj) => gameObject.SetActive(true);
 
     private void CachePosition(object obj)
     {
@@ -88,6 +92,7 @@ public class SliderMapController : MonoBehaviour
 
     private void OnDestroy()
     {
+        EventsManager.Unsubscribe(EventID.OnStartCount, DisplayUI);
         EventsManager.Unsubscribe(EventID.OnSendPosition, CachePosition);
         EventsManager.Unsubscribe(EventID.OnCatSendPosition, AddCat);
         EventsManager.Unsubscribe(EventID.OnCatRescued, RemoveCat);
