@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using static GameConstants;
@@ -69,13 +70,19 @@ public class SliderMapController : MonoBehaviour
         catIcon.transform.position = transform.position;
         catIcon.value = (catAdded.PositionX - _startLinePositionX) / _mapLength;
         _listCats.Add(catAdded);
+        _listCats.OrderByDescending(x => x.PositionX);
+        EventsManager.Notify(EventID.OnCatDisplayRange, _listCats[_listCats.Count - 1]);
         _dictCatSliders.Add(catAdded.Controller, catIcon);
         //Debug.Log("Cat add: " + catAdded.Controller.gameObject.name);
     }
 
     private void RemoveCat(object obj)
     {
-        Destroy(_dictCatSliders[(CatController)obj].gameObject);
+        CatController catRemoved = (CatController)obj;
+        _listCats.Remove(_listCats.Find(x => x.Controller == catRemoved));
+        _listCats.OrderByDescending(x => x.PositionX);
+        Destroy(_dictCatSliders[catRemoved].gameObject);
+        EventsManager.Notify(EventID.OnCatDisplayRange, (_listCats.Count > 0) ? _listCats[_listCats.Count - 1] : null);
         //Debug.Log("remove cat:" + (CatController)obj + "out of Slider Map");
     }
 

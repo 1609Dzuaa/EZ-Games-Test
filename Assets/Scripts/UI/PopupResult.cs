@@ -6,6 +6,8 @@ using UnityEngine;
 using static GameEnums;
 using static GameConstants;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using DG.Tweening;
 
 public struct ResultParams
 {
@@ -14,25 +16,49 @@ public struct ResultParams
     public int Timer;
     public float MaxSpeed;
     public float Money;
+    public float PositionX;
+
+    public ResultParams(EResult result, int rescued, int timer, float maxSpeed, float money, float positionX)
+    {
+        Result = result;
+        Rescued = rescued;
+        Timer = timer;
+        MaxSpeed = maxSpeed;
+        Money = money;
+        PositionX = positionX;
+    }
 }
 
 public class PopupResult : PopupController
 {
     [SerializeField]
     TextMeshProUGUI _txtResult, _txtRescued, _txtTimer,
-        _txtSpeed, _txtGetNormal, _txtGetTriple;
+        _txtSpeed, _txtGetNormal, _txtGetTriple, _txtProgress;
+    [SerializeField] Slider _progressSlider;
+    [SerializeField] float _slideDuration;
     const int GET_TRIPLE = 0;
     const int GET_NORMAL = 1;
     ResultParams _params;
+    float _value;
 
     private void Start()
     {
         EventsManager.Subscribe(EventID.OnReceiveResult, OnReceiveResult);
     }
 
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        _progressSlider.value = DEFAULT_VALUE_ZERO;
+        _progressSlider.DOValue(_value, _slideDuration);
+    }
+
     private void OnReceiveResult(object obj)
     {
         _params = (ResultParams)obj;
+        _value = (_params.PositionX / 150f) + _params.Rescued * 0.1f; 
+        Debug.Log("prg: " + _value);
+        _txtProgress.text = $"{_value * 100f :0.0}" + "%";
         _txtResult.text = _params.Result == EResult.Completed ? "Completed!" : "Failed!";
         _txtRescued.text = _params.Rescued.ToString() + "/5";
         _txtTimer.text = ConvertTimer(_params.Timer);

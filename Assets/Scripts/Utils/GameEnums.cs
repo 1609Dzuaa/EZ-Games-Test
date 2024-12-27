@@ -23,6 +23,7 @@ public static class GameEnums
         OnDiscovered, //mèo bị phát hiện => run
         OnCatOutRange, //mèo out range => reset fill cho mèo
         OnCatBackToPlayer,
+        OnCatDisplayRange, //chỉ định mèo nào sẽ display cái range
 
     }
 

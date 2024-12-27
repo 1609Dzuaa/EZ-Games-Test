@@ -189,7 +189,8 @@ public class PlayerController : BaseCharacter
                 Rescued = _hashCatSaved.Count, //chết thì giữ mấy con trên đầu để tính điểm
                 Timer = (int)Time.time,
                 MaxSpeed = _maxSpeed,
-                Money = _hashCatSaved.Count * BOUNTY_EACH_CAT + _maxPositionX * BOUNTY_EACH_METTER
+                Money = _hashCatSaved.Count * BOUNTY_EACH_CAT + _maxPositionX * BOUNTY_EACH_METTER,
+                PositionX = transform.position.x
             });
             //Debug.Log("You lose");
         }
@@ -215,11 +216,11 @@ public class PlayerController : BaseCharacter
             {
                 Debug.DrawRay(_rayPos.position, direction * _radius, Color.green);
                 _foundCat = true;
-                _lineRenderer.enabled = true;
                 CatController catDetected = hit.transform.GetComponent<CatController>();
                 if (!_hashCatFounded.Contains(catDetected) && !_hashCatSaved.Contains(catDetected) && catDetected != null)
                 {
                     _hashCatFounded.Add(catDetected);
+                    _lineRenderer.enabled = true; //chỉ hiện line vs mèo ch đc save
                     //if (catDetected == null) Debug.Log("catdetected null");
                     EventsManager.Notify(EventID.OnDiscovered, catDetected.ID);
                     //Debug.Log("add cat to hashFound: " + catDetected.name);

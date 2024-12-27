@@ -46,11 +46,18 @@ public class CatController : BaseCharacter
     bool _hasSetPath, _followPlayer, _isRescued;
     Tween _tweenFill;
     Transform _newPos;
+    BoxCollider _col;
 
     #region States
     public CatIdleState IdleState;
     public CatRunState RunState;
     #endregion
+
+    protected override void Awake()
+    {
+        base.Awake();
+        EventsManager.Subscribe(EventID.OnCatDisplayRange, DisplayRange);
+    }
 
     private void Start()
     {
@@ -60,6 +67,7 @@ public class CatController : BaseCharacter
         _patienceBar.SetActive(false);
         ID = Guid.NewGuid().ToString();
         Anim = GetComponentInChildren<Animator>();
+        _col = GetComponent<BoxCollider>();
         EventsManager.Notify(EventID.OnCatSendPosition, new CatInfor(this, transform.position.x));
         EventsManager.Subscribe(EventID.OnDiscovered, RunFromPlayer);
         EventsManager.Subscribe(EventID.OnCatOutRange, KillTween);
@@ -75,6 +83,7 @@ public class CatController : BaseCharacter
         EventsManager.Unsubscribe(EventID.OnDiscovered, RunFromPlayer);
         EventsManager.Unsubscribe(EventID.OnCatOutRange, KillTween);
         EventsManager.Unsubscribe(EventID.OnCatBackToPlayer, MoveToPlayer);
+        EventsManager.Unsubscribe(EventID.OnCatDisplayRange, DisplayRange);
     }
 
     private void RunFromPlayer(object obj)
@@ -86,7 +95,6 @@ public class CatController : BaseCharacter
             _agent.SetDestination(new Vector3(150f, DEFAULT_VALUE_ZERO, DEFAULT_VALUE_ZERO));
             _hasSetPath = true;
         }
-        //else return;
 
         //Debug.Log("run");
         if (_isRescued) return; //prevent maybe being called again ?????
@@ -107,6 +115,7 @@ public class CatController : BaseCharacter
                     //Debug.Log("Reset Path");
                 }
                 _isRescued = true;
+                _lineRenderer.enabled = false;
                 _patienceBar.SetActive(false);
                 EventsManager.Notify(EventID.OnCatRescued, this);
                 //Debug.Log("Save success cat: " + name);
@@ -138,6 +147,7 @@ public class CatController : BaseCharacter
             _agent.enabled = false;
             ChangeState(IdleState);
             transform.position = newPosition;
+            _col.enabled = false;
             //Debug.Log("Cat on top");
         }
         else
@@ -147,6 +157,20 @@ public class CatController : BaseCharacter
             _agent.SetDestination(newPosition);
             //Debug.Log("cat back to: " + newPosition);
         }
+    }
+
+    private void DisplayRange(object obj)
+    {
+        if (obj == null) return;
+
+        CatInfor info = (CatInfor)obj;
+        if (ID != info.Controller.ID)
+        {
+            _lineRenderer.enabled = false;
+            return;
+        }
+
+        _lineRenderer.enabled = true;
     }
 
     protected override void Update()
