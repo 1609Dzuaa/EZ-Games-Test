@@ -115,7 +115,7 @@ public class PlayerController : BaseCharacter
         _speed += (float)obj;
         _maxSpeed = _speed; //speed lúc này là cực đại
         _upgradeSpeedTimer = Time.time;
-        Debug.Log("UpdateSpeed: " + _speed);
+        //Debug.Log("UpdateSpeed: " + _speed);
     }
 
     private void CacheJoystick(object obj) => joyStick = (Joystick)obj;
@@ -127,6 +127,7 @@ public class PlayerController : BaseCharacter
         CatController catRescued = (CatController)obj;
         _hashCatFounded.Remove(catRescued);
         _hashCatSaved.Add(catRescued);
+        _speed -= DECREASE_VELO_EACH_CAT;
         int headOrBehind = Random.Range(0, 2);
         if (headOrBehind < 1)
         {
@@ -153,7 +154,7 @@ public class PlayerController : BaseCharacter
         MeasureMaxPostionX();
         BlockMovement();
         TrackCat();
-        Debug.Log("Speed: " + _speed);
+        //Debug.Log("Speed: " + _speed);
     }
 
     protected override void FixedUpdate()
@@ -273,7 +274,7 @@ public class PlayerController : BaseCharacter
         {
             _hasDebuffed = true;
             _speed = _initialSpeed;
-            Debug.Log("debuff " + _speed);
+            //Debug.Log("debuff " + _speed);
         }
     }
 
@@ -304,7 +305,7 @@ public class PlayerController : BaseCharacter
         _lineRenderer.SetPosition(steps + 1, Vector3.zero);
     }
 
-    #region Animation Event Related
+    #region Animation Events Related
 
     private void StartGame()
     {

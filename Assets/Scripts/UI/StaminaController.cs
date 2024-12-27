@@ -111,7 +111,6 @@ public class StaminaController : MonoBehaviour
         }
     }
 
-
     // Update is called once per frame
     void Update()
     {
@@ -129,6 +128,7 @@ public class StaminaController : MonoBehaviour
                     _txtStamina.text = _stamina.ToString() + "/" + _initialStamina.ToString();
                     SpawnPrefab(EPoolable.StaminaPrefab, _staminaSpawn.position);
                     SpawnPrefab(EPoolable.SpeedPrefab, touch.position);
+                    EventsManager.Notify(EventID.OnIncreaseSpeedUI, _cacheIncrease);
                     _countTouch++;
                 }
             }

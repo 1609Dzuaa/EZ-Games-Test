@@ -28,6 +28,7 @@ public static class GameConstants
 
     public const string WAVE_TAG = "Wave";
     public const string CAT_TAG = "Cat";
+    public const string PLAYER_NAME = "Player";
 
     #endregion
 
@@ -46,6 +47,7 @@ public static class GameConstants
     public const float TRIPLE_REWARD = 3.0f;
     public const float DEFAULT_VALUE_ZERO = 0.0f;
     public const float DEFAULT_VALUE_ONE = 1.0f;
+    public const float DECREASE_VELO_EACH_CAT = 1.1f;
 
     #endregion
 

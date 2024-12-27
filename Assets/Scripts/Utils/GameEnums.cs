@@ -24,6 +24,7 @@ public static class GameEnums
         OnCatOutRange, //mèo out range => reset fill cho mèo
         OnCatBackToPlayer,
         OnCatDisplayRange, //chỉ định mèo nào sẽ display cái range
+        OnIncreaseSpeedUI, //increase khi touch
 
     }
 

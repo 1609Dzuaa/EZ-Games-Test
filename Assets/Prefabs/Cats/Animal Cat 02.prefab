@@ -76,12 +76,12 @@ GameObject:
   - component: {fileID: 2471322464013512774}
   - component: {fileID: 4781915502858862318}
   m_Layer: 5
-  m_Name: Image
+  m_Name: ExclamationMark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2293661179040599779
 RectTransform:
   m_ObjectHideFlags: 0
@@ -529,6 +529,7 @@ MonoBehaviour:
   _lineRenderer: {fileID: 5556478669521138830}
   _patienceFill: {fileID: 4675817243906122849}
   _patienceBar: {fileID: 1162459289835162031}
+  _exclaMark: {fileID: 1036372524146939092}
   _agent: {fileID: 7778468121543960317}
   ID: 
 --- !u!120 &5556478669521138830

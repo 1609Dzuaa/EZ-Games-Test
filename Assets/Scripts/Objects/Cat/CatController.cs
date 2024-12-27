@@ -39,7 +39,7 @@ public class CatController : BaseCharacter
     [SerializeField] int _segment;
     [SerializeField] LineRenderer _lineRenderer;
     [SerializeField] Image _patienceFill;
-    [SerializeField] GameObject _patienceBar;
+    [SerializeField] GameObject _patienceBar, _exclaMark;
     [SerializeField] NavMeshAgent _agent;
     [HideInInspector] public string ID;
     float _initialSpeed, _initialDuration;
@@ -117,6 +117,7 @@ public class CatController : BaseCharacter
                 _isRescued = true;
                 _lineRenderer.enabled = false;
                 _patienceBar.SetActive(false);
+                _exclaMark.SetActive(false);
                 EventsManager.Notify(EventID.OnCatRescued, this);
                 //Debug.Log("Save success cat: " + name);
             });

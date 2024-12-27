@@ -465,6 +465,7 @@ MonoBehaviour:
   _lineRenderer: {fileID: 1711954356423348768}
   _patienceFill: {fileID: 5002846816177522447}
   _patienceBar: {fileID: 6343499073663518482}
+  _exclaMark: {fileID: 649752812334528906}
   _agent: {fileID: 7778468121543960317}
   ID: 
 --- !u!120 &1711954356423348768
