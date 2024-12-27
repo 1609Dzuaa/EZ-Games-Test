@@ -53,6 +53,7 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         EventsManager.Notify(EventID.OnSendJoystick, this);
         EventsManager.Subscribe(EventID.OnAllowToPlay, DisplayJoystick);
         EventsManager.Subscribe(EventID.OnReceiveResult, HideJoystick);
+        EventsManager.Subscribe(EventID.OnStartPhase2, HideJoystick);
         //Debug.Log("Noti Joystick");
         HandleRange = handleRange;
         DeadZone = deadZone;
@@ -70,7 +71,11 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         gameObject.SetActive(false);
     }
 
-    private void DisplayJoystick(object obj) => gameObject.SetActive(true);
+    private void DisplayJoystick(object obj)
+    {
+        gameObject.SetActive(true);
+        EventsManager.Notify(EventID.OnSendJoystick, this); //send cho viec choi lai
+    }
 
     private void HideJoystick(object obj) => gameObject.SetActive(false);
 
@@ -78,6 +83,7 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     {
         EventsManager.Unsubscribe(EventID.OnReceiveResult, HideJoystick);
         EventsManager.Unsubscribe(EventID.OnAllowToPlay, DisplayJoystick);
+        EventsManager.Unsubscribe(EventID.OnStartPhase2, HideJoystick);
     }
 
     public virtual void OnPointerDown(PointerEventData eventData)

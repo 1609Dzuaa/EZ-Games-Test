@@ -36,21 +36,29 @@ public class PlayerRunState : BaseState
         //di chuyển trên trục x và z của map với x là trục di chuyển chính
         //=> trục x lúc này là vertical và z là horizontal
         //và phải đảo dấu trục z để phù hợp.
-        _pController.Input = new Vector3(_pController.Vertical, 0f, _pController.Horizontal * REVERSE_AXIS_FACTOR);
-        _pController.Input.Normalize();
-        //Debug.Log("Input, newPos: " + _pController.Input + ", " + _pController.transform.position + _pController.Input * _pController.Speed * Time.deltaTime);
-        _pController.Rb.MovePosition(_pController.transform.position + _pController.Input * _pController.Speed * Time.deltaTime);
-
-        //Debug.Log("Input: " + _pController.Input);
-
-        if (_pController.Input.normalized != Vector3.zero)
+        if (!_pController.Phase2Started)
         {
-            float targetAngle = Mathf.Atan2(_pController.Horizontal, _pController.Vertical) * Mathf.Rad2Deg;
-            //Debug.Log("target b4 add: " + targetAngle);
-            targetAngle += 90f; //thêm 90 độ do Unity Unit Circle lệch 90 (có thể +- nên phải thử)
-            //Debug.Log("targetANgle: " + targetAngle);
-            float angle = Mathf.SmoothDampAngle(_pController.transform.eulerAngles.y, targetAngle, ref currentVelocity, _pController.SmoothRotateTime);
-            _pController.transform.rotation = Quaternion.Euler(0, angle, 0);
+            _pController.Input = new Vector3(_pController.Vertical, 0f, _pController.Horizontal * REVERSE_AXIS_FACTOR);
+            _pController.Input.Normalize();
+            //Debug.Log("Input, newPos: " + _pController.Input + ", " + _pController.transform.position + _pController.Input * _pController.Speed * Time.deltaTime);
+            _pController.Rb.MovePosition(_pController.transform.position + _pController.Input * _pController.Speed * Time.deltaTime);
+
+            //Debug.Log("Input: " + _pController.Input);
+
+            if (_pController.Input.normalized != Vector3.zero)
+            {
+                float targetAngle = Mathf.Atan2(_pController.Horizontal, _pController.Vertical) * Mathf.Rad2Deg;
+                //Debug.Log("target b4 add: " + targetAngle);
+                targetAngle += 90f; //thêm 90 độ do Unity Unit Circle lệch 90 (có thể +- nên phải thử)
+                                    //Debug.Log("targetANgle: " + targetAngle);
+                float angle = Mathf.SmoothDampAngle(_pController.transform.eulerAngles.y, targetAngle, ref currentVelocity, _pController.SmoothRotateTime);
+                _pController.transform.rotation = Quaternion.Euler(0, angle, 0);
+            }
+        }
+        else
+        {
+            _pController.Rb.MovePosition(_pController.transform.position + Vector3.right * _pController.Speed * Time.deltaTime);
+            Debug.Log("player phase2");
         }
     }
 }

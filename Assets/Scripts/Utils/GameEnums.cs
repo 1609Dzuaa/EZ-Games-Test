@@ -25,6 +25,8 @@ public static class GameEnums
         OnCatBackToPlayer,
         OnCatDisplayRange, //chỉ định mèo nào sẽ display cái range
         OnIncreaseSpeedUI, //increase khi touch
+        OnStartPhase2,
+        OnTouchForSpeed,
 
     }
 

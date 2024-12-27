@@ -10,6 +10,9 @@ public class SpawnObjectController : BaseSingleton<SpawnObjectController>
     [Header("Phải đảm bảo lượng prefab luôn > số lượng muốn renew")]
     [SerializeField] int _numObObjectsRenew;
     [SerializeField] float _minX, _maxX, _minZ, _maxZ, _minAngle, _maxAngle;
+    [SerializeField] float _maxXPhase1;
+
+    [SerializeField] Transform _min, _max;
 
     [Header("Default range cho vật thể đầu")]
     [SerializeField] float _defaultMinX, _defaultMaxX;
@@ -18,7 +21,7 @@ public class SpawnObjectController : BaseSingleton<SpawnObjectController>
     List<int> _listIndexPrevRound;
     bool _isFirstRound = true;
     int _prefabIndex; //random prefab nào sẽ đc chọn
-    float _prevObjPosX;
+    float _prevObjPosX, _xStep;
 
     protected override void Awake()
     {
@@ -48,6 +51,7 @@ public class SpawnObjectController : BaseSingleton<SpawnObjectController>
     private void ChangeObjects(object obj = null)
     {
         //reset here
+        _xStep = (_max.position.x - _min.position.x) / _numberOfObjects;
         _listIndexPrevRound.Clear();
         _prevObjPosX = DEFAULT_VALUE_ZERO;
 
@@ -110,12 +114,12 @@ public class SpawnObjectController : BaseSingleton<SpawnObjectController>
         //là obj đầu tiên
         if (_prevObjPosX < NEAR_ZERO_THRESHOLD)
         {
-            randomX = Random.Range(_defaultMinX, _defaultMaxX);
+            randomX = _min.position.x;
             randomZ = Random.Range(_minZ, _maxZ);
         }
         else
         {
-            randomX = Random.Range(_minX, _maxX);
+            randomX = _xStep;//Random.Range(0f, _xStep);
             randomZ = Random.Range(_minZ, _maxZ);
         }
 

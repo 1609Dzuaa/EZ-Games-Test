@@ -39,7 +39,7 @@ public class UIManager : BaseSingleton<UIManager>
             _dictPopupUIs.Add(_popupUIs[i].PopupID, _popupUIs[i]);
         }
         _initialPos = _imageTransition.transform.localPosition;
-        EventsManager.Subscribe(EventID.OnReceiveResult, HideMeasureComponents);
+        //EventsManager.Subscribe(EventID.OnReceiveResult, HideMeasureComponents);
         //_measureComponents.SetActive(false);
         //_readyController.SetActive(false);
         //EventsManager.Notify(EventID.OnStartCount);
@@ -48,7 +48,7 @@ public class UIManager : BaseSingleton<UIManager>
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        EventsManager.Unsubscribe(EventID.OnReceiveResult, HideMeasureComponents);
+        //EventsManager.Unsubscribe(EventID.OnReceiveResult, HideMeasureComponents);
     }
 
     private void HideMeasureComponents(object obj) => _measureComponents.SetActive(false);
@@ -74,13 +74,14 @@ public class UIManager : BaseSingleton<UIManager>
             //Debug.Log("Middile: " + _imageTransition.transform.localPosition);
             GameManager.Instance.LoadScene(sceneIndex);
             StartCoroutine(DelayReload());
-            _measureComponents.SetActive(true);
+            //_measureComponents.SetActive(true);
+            //_readyController.SetActive(false);
 
             _imageTransition.transform.DOLocalMoveX(endValue2, _duration).OnComplete(() =>
             {
                 _imageTransition.transform.localPosition = _initialPos;
-                _readyController.SetActive(true);
-                EventsManager.Notify(EventID.OnStartCount);
+                //_readyController.SetActive(true);
+                //EventsManager.Notify(EventID.OnStartCount);
                 //Debug.Log("Done");
             });
         });

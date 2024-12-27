@@ -19,6 +19,18 @@ public struct StaminaSpeed
     }
 }
 
+public struct SpeedInfor
+{
+    public float MaxSpeedable;
+    public float MaxSpeed;
+
+    public SpeedInfor(float maxSpeedable, float maxSpeed)
+    {
+        MaxSpeedable = maxSpeedable;
+        MaxSpeed = maxSpeed;
+    }
+}
+
 public class StaminaController : MonoBehaviour
 {
     [SerializeField] TextMeshProUGUI _txtStamina;
@@ -27,7 +39,8 @@ public class StaminaController : MonoBehaviour
     [SerializeField] Image _imageSlider;
     [SerializeField] Transform _staminaSpawn;
     float _decreasePrefab, _initialStamina, _decreaseStamina, _cacheIncrease, _recoverTimer;
-    bool _allowDecrease = true;
+    float _maxSpeedable;
+    bool _allowDecrease = true, _phase2Started;
     int _countTouch = 0;
     const float DECREASE_EACH_COUNT_FACTOR = 10.0f;
     const float SPEED_INCREASE_EACH_COUNT_FACTOR = 0.05f;
@@ -42,15 +55,29 @@ public class StaminaController : MonoBehaviour
         _txtStamina.text = _stamina.ToString() + "/" + _stamina.ToString();
         _initialStamina = _stamina;
         _decreasePrefab = _stamina / DECREASE_EACH_COUNT_FACTOR;
+        _maxSpeedable = _initialStamina / DECREASE_EACH_COUNT_FACTOR;
         _decreaseStamina = _decreasePrefab * STAMINA_DECREASE_EACH_COUNT_FACTOR;
         _sliderStamina.value = SLIDER_MAX_VALUE;
-        EventsManager.Subscribe(EventID.OnStartCount, DisplayUI);
-        EventsManager.Subscribe(EventID.OnAllowToPlay, StopDecrease);
-        EventsManager.Subscribe(EventID.OnReloadLevel, AllowToDecrease);
+    }
+
+    private void HideUI(object obj) => gameObject.SetActive(false);
+
+    private void AllowTouchForSpeed(object obj)
+    {
+        _allowDecrease = true;
+        _phase2Started = true;
+        _recoverTimer = Time.time;
+        //StartCoroutine(RecoverStamina());
     }
 
     private void Start()
     {
+        EventsManager.Subscribe(EventID.OnStartCount, DisplayUI);
+        EventsManager.Subscribe(EventID.OnAllowToPlay, StopDecrease);
+        EventsManager.Subscribe(EventID.OnReloadLevel, AllowToDecrease);
+        EventsManager.Subscribe(EventID.OnStartPhase2, AllowTouchForSpeed);
+        EventsManager.Subscribe(EventID.OnReceiveResult, HideUI);
+
         _cacheIncrease = _decreasePrefab * SPEED_INCREASE_EACH_COUNT_FACTOR;
         StaminaSpeed sp = new StaminaSpeed(_decreasePrefab, _cacheIncrease);
         EventsManager.Notify(EventID.OnUpgradeSpeed, sp);
@@ -62,7 +89,9 @@ public class StaminaController : MonoBehaviour
     {
         EventsManager.Unsubscribe(EventID.OnStartCount, DisplayUI);
         EventsManager.Unsubscribe(EventID.OnAllowToPlay, StopDecrease);
-        EventsManager.Subscribe(EventID.OnReloadLevel, AllowToDecrease);
+        EventsManager.Unsubscribe(EventID.OnReloadLevel, AllowToDecrease);
+        EventsManager.Unsubscribe(EventID.OnStartPhase2, AllowTouchForSpeed);
+        EventsManager.Unsubscribe(EventID.OnReceiveResult, HideUI);
     }
 
     private void DisplayUI(object obj) => gameObject.SetActive(true);
@@ -81,8 +110,9 @@ public class StaminaController : MonoBehaviour
     private void StopDecrease(object obj)
     {
         _allowDecrease = false;
-        EventsManager.Notify(EventID.OnUpdatePlayerSpeed, _cacheIncrease * _countTouch);
+        EventsManager.Notify(EventID.OnUpdatePlayerSpeed, new SpeedInfor(_maxSpeedable, _cacheIncrease * _countTouch));
         StartCoroutine(RecoverStamina());
+        Debug.Log("notify update speed");
     }
 
     private IEnumerator RecoverStamina()
@@ -96,18 +126,23 @@ public class StaminaController : MonoBehaviour
         while (_stamina < _initialStamina)
         {
             //Debug.Log("inside loop, b4 check");
-            if (Time.time - _recoverTimer >= A_SECOND)
-            {
-                _stamina += _decreasePrefab;
-                _stamina = Mathf.Min(_stamina, _initialStamina);
-
-                _txtStamina.text = ((int)_stamina).ToString() + "/" + _initialStamina.ToString();
-                _imageSlider.DOFillAmount(_stamina / _initialStamina, _tweenDuration);
-
-                _recoverTimer = Time.time;
-            }
+            HandleRecoverStamina();
 
             yield return null;
+        }
+    }
+
+    private void HandleRecoverStamina()
+    {
+        if (Time.time - _recoverTimer >= A_SECOND)
+        {
+            _stamina += _decreasePrefab;
+            _stamina = Mathf.Min(_stamina, _initialStamina);
+
+            _txtStamina.text = ((int)_stamina).ToString() + "/" + _initialStamina.ToString();
+            _imageSlider.DOFillAmount(_stamina / _initialStamina, _tweenDuration);
+
+            _recoverTimer = Time.time;
         }
     }
 
@@ -129,6 +164,11 @@ public class StaminaController : MonoBehaviour
                     SpawnPrefab(EPoolable.StaminaPrefab, _staminaSpawn.position);
                     SpawnPrefab(EPoolable.SpeedPrefab, touch.position);
                     EventsManager.Notify(EventID.OnIncreaseSpeedUI, _cacheIncrease);
+                    if (_phase2Started)
+                    {
+                        EventsManager.Notify(EventID.OnTouchForSpeed, _cacheIncrease);
+                        //HandleRecoverStamina();
+                    }
                     _countTouch++;
                 }
             }

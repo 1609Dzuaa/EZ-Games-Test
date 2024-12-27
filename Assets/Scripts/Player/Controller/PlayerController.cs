@@ -4,6 +4,7 @@ using UnityEngine;
 using static GameEnums;
 using static GameConstants;
 using Unity.Burst.CompilerServices;
+using Cinemachine;
 
 public class PlayerController : BaseCharacter
 {
@@ -20,11 +21,14 @@ public class PlayerController : BaseCharacter
     [SerializeField] Transform _rayPos;
     [SerializeField] Transform[] _arrCatPosTop, _arrCatPosBehind;
 
-    float _horizontal, _vertical, _maxSpeed, _upgradeSpeedTimer, _initialSpeed;
+    [SerializeField] CinemachineVirtualCamera _camPhase2;
+
+    float _horizontal, _vertical, _maxSpeed, _upgradeSpeedTimer, _initialSpeed, _maxSpeedable;
     List<int> _listCatsRescued;
     Collider[] _arrCatCols;
     HashSet<CatController> _hashCatFounded, _hashCatSaved;
     bool _isMoving = false, _hasDebuffed, _foundCat;
+    [HideInInspector] public bool Phase2Started;
     Vector3 _input;
     float _maxPositionX;
     int _indexPosBehind, _indexPosTop;
@@ -57,6 +61,7 @@ public class PlayerController : BaseCharacter
     {
         base.Awake();
         _listCatsRescued = new List<int>();
+        _initialSpeed = _speed;
     }
 
     private void Start()
@@ -75,6 +80,7 @@ public class PlayerController : BaseCharacter
         EventsManager.Subscribe(EventID.OnSendJoystick, CacheJoystick);
         EventsManager.Subscribe(EventID.OnStartCount, StartCelebrating);
         EventsManager.Subscribe(EventID.OnCatRescued, HandleRescueCat);
+        EventsManager.Subscribe(EventID.OnTouchForSpeed, TouchForSpeed);
 
         //Debug.Log("Sub Joystick");
 
@@ -95,7 +101,10 @@ public class PlayerController : BaseCharacter
         EventsManager.Unsubscribe(EventID.OnSendJoystick, CacheJoystick);
         EventsManager.Unsubscribe(EventID.OnStartCount, StartCelebrating);
         EventsManager.Unsubscribe(EventID.OnCatRescued, HandleRescueCat);
+        EventsManager.Unsubscribe(EventID.OnTouchForSpeed, TouchForSpeed);
     }
+
+    private void TouchForSpeed(object obj) => Mathf.Clamp(_speed += (float)obj, DEFAULT_VALUE_ZERO, _maxSpeedable);
 
     private void DecreaseCat(object obj)
     {
@@ -111,11 +120,12 @@ public class PlayerController : BaseCharacter
 
     private void UpdatePlayerSpeed(object obj)
     {
-        _initialSpeed = _speed;
-        _speed += (float)obj;
+        SpeedInfor info = (SpeedInfor)obj;
+        _speed += info.MaxSpeed;
         _maxSpeed = _speed; //speed lúc này là cực đại
+        _maxSpeedable = info.MaxSpeedable;
         _upgradeSpeedTimer = Time.time;
-        //Debug.Log("UpdateSpeed: " + _speed);
+        Debug.Log("UpdateSpeed: " + _speed);
     }
 
     private void CacheJoystick(object obj) => joyStick = (Joystick)obj;
@@ -127,6 +137,17 @@ public class PlayerController : BaseCharacter
         CatController catRescued = (CatController)obj;
         _hashCatFounded.Remove(catRescued);
         _hashCatSaved.Add(catRescued);
+
+        if (_hashCatSaved.Count == DEFAULT_MAX_CAT)
+        {
+            transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+            _camPhase2.gameObject.SetActive(true);
+            EventsManager.Notify(EventID.OnStartPhase2);
+            Phase2Started = true;
+            if (_state is not PlayerRunState)
+                ChangeState(RunState);
+        }
+
         _speed -= DECREASE_VELO_EACH_CAT;
         int headOrBehind = Random.Range(0, 2);
         if (headOrBehind < 1)
@@ -154,7 +175,7 @@ public class PlayerController : BaseCharacter
         MeasureMaxPostionX();
         BlockMovement();
         TrackCat();
-        //Debug.Log("Speed: " + _speed);
+        Debug.Log("Speed: " + _speed);
     }
 
     protected override void FixedUpdate()
@@ -195,6 +216,21 @@ public class PlayerController : BaseCharacter
                 PositionX = transform.position.x
             });
             //Debug.Log("You lose");
+        }
+        else if (other.CompareTag(END_ZONE_TAG))
+        {
+            EventsManager.Notify(EventID.OnReceiveResult, new ResultParams
+            {
+                Result = EResult.Completed,
+                Rescued = _hashCatSaved.Count,
+                Timer = (int)Time.time,
+                MaxSpeed = _maxSpeed,
+                Money = _hashCatSaved.Count * BOUNTY_EACH_CAT + _maxPositionX * BOUNTY_EACH_METTER,
+                PositionX = transform.position.x,
+            });
+            UIManager.Instance.TogglePopup(true, EPopupID.Result);
+            _speed = DEFAULT_VALUE_ZERO;
+            ChangeState(IdleState);
         }
     }
 

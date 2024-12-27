@@ -17,16 +17,6 @@ public struct ResultParams
     public float MaxSpeed;
     public float Money;
     public float PositionX;
-
-    public ResultParams(EResult result, int rescued, int timer, float maxSpeed, float money, float positionX)
-    {
-        Result = result;
-        Rescued = rescued;
-        Timer = timer;
-        MaxSpeed = maxSpeed;
-        Money = money;
-        PositionX = positionX;
-    }
 }
 
 public class PopupResult : PopupController
@@ -55,8 +45,9 @@ public class PopupResult : PopupController
 
     private void OnReceiveResult(object obj)
     {
+        float endZonePosX = GameObject.Find("EndZone").transform.position.x; //too lazy
         _params = (ResultParams)obj;
-        _value = (_params.PositionX / 150f) + _params.Rescued * 0.1f; 
+        _value = (_params.PositionX / endZonePosX) + _params.Rescued * 0.1f; 
         Debug.Log("prg: " + _value);
         _txtProgress.text = $"{_value * 100f :0.0}" + "%";
         _txtResult.text = _params.Result == EResult.Completed ? "Completed!" : "Failed!";
@@ -112,8 +103,8 @@ public class PopupResult : PopupController
         //dựa trên param để quyết định switch next level hay replay
         int currentLevel = SceneManager.GetActiveScene().buildIndex;
         int nextLevel = currentLevel + 1;
-        UIManager.Instance?.TogglePopup(false, _popupID);
-        UIManager.Instance?.TransitionAndSwitchScene((_params.Result == EResult.Failed) ? currentLevel : nextLevel);
+        UIManager.Instance.TogglePopup(false, _popupID);
+        UIManager.Instance.TransitionAndSwitchScene((_params.Result == EResult.Failed) ? currentLevel : nextLevel);
         //GameManager.Instance?.ReloadScene();
     }
 }

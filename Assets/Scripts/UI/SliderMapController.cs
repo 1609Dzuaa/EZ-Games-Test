@@ -43,9 +43,13 @@ public class SliderMapController : MonoBehaviour
         EventsManager.Subscribe(EventID.OnSendPosition, CachePosition);
         EventsManager.Subscribe(EventID.OnCatSendPosition, AddCat);
         EventsManager.Subscribe(EventID.OnCatRescued, RemoveCat);
+        EventsManager.Subscribe(EventID.OnReceiveResult, HideUI);
         gameObject.SetActive(false);
         //_startLinePositionX = _player.position.x; //là startLine trong design file
     }
+
+    private void HideUI(object obj) => gameObject.SetActive(false);
+
 
     private void DisplayUI(object obj) => gameObject.SetActive(true);
 
@@ -96,6 +100,7 @@ public class SliderMapController : MonoBehaviour
         EventsManager.Unsubscribe(EventID.OnSendPosition, CachePosition);
         EventsManager.Unsubscribe(EventID.OnCatSendPosition, AddCat);
         EventsManager.Unsubscribe(EventID.OnCatRescued, RemoveCat);
+        EventsManager.Unsubscribe(EventID.OnReceiveResult, HideUI);
     }
 
     // Update is called once per frame

@@ -29,6 +29,7 @@ public static class GameConstants
     public const string WAVE_TAG = "Wave";
     public const string CAT_TAG = "Cat";
     public const string PLAYER_NAME = "Player";
+    public const string END_ZONE_TAG = "EndZone";
 
     #endregion
 
@@ -48,6 +49,7 @@ public static class GameConstants
     public const float DEFAULT_VALUE_ZERO = 0.0f;
     public const float DEFAULT_VALUE_ONE = 1.0f;
     public const float DECREASE_VELO_EACH_CAT = 1.1f;
+    public const int DEFAULT_MAX_CAT = 1;
 
     #endregion
 

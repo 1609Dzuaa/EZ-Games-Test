@@ -6,6 +6,8 @@ using static GameConstants;
 
 public class WaveController : BaseCharacter
 {
+    [SerializeField] float _speedIncrese;
+
     float _timer = 0f;
     bool _canMove = true;
     Vector3 _initialPlayerPos;
@@ -27,7 +29,10 @@ public class WaveController : BaseCharacter
         EventsManager.Subscribe(EventID.OnReceiveResult, StopMoving);
         EventsManager.Subscribe(EventID.OnRevive, Revive);
         EventsManager.Subscribe(EventID.OnSendPosition, CacheInitialPlayerPos);
+        EventsManager.Subscribe(EventID.OnStartPhase2, IncreseWaveSpeed);
     }
+
+    private void IncreseWaveSpeed(object obj) => _speed = _speedIncrese;
 
     private void StopMoving(object obj)
     {
@@ -64,6 +69,7 @@ public class WaveController : BaseCharacter
         EventsManager.Unsubscribe(EventID.OnReceiveResult, StopMoving);
         EventsManager.Unsubscribe(EventID.OnSendPosition, CacheInitialPlayerPos);
         EventsManager.Unsubscribe(EventID.OnRevive, Revive);
+        EventsManager.Subscribe(EventID.OnStartPhase2, IncreseWaveSpeed);
     }
 
     protected override void Update()
