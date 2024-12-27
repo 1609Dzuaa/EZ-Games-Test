@@ -42,6 +42,7 @@ public class UIReadyController : MonoBehaviour
             tweenScaleText.Kill();
             gameObject.SetActive(false);
             EventsManager.Notify(EventID.OnAllowToPlay);
+            Debug.Log("playyy");
         });
     }
 

@@ -100,6 +100,7 @@ public class CatController : BaseCharacter
         if (_isRescued) return; //prevent maybe being called again ?????
 
         _patienceBar.SetActive(true);
+        _exclaMark.SetActive(true);
         _tweenFill = DOTween.To(() => _patienceDuration, x => _patienceDuration = x, 0, _patienceDuration)
             .OnUpdate(() =>
             {
@@ -173,6 +174,7 @@ public class CatController : BaseCharacter
         }
 
         _lineRenderer.enabled = true;
+        Debug.Log("cat: " + name + " display line");
     }
 
     protected override void Update()

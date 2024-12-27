@@ -190,7 +190,7 @@ Transform:
   m_GameObject: {fileID: 4375345606453952622}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.5}
+  m_LocalPosition: {x: 0, y: 0, z: -2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -353,6 +353,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5901090767522986506}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6098463353659329565
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7915488588026737950}
+  m_Layer: 6
+  m_Name: CatPosHead (6)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7915488588026737950
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6098463353659329565}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 7, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5901090767522986506}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6620712891076530208
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,6 +472,37 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5901090767522986506}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7498298230317807657
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1311493093159451155}
+  m_Layer: 6
+  m_Name: CatPosBehind0 (5)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1311493093159451155
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7498298230317807657}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1949,6 +2011,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8c15ff989b4fc8b4c9b9a82ec417d25d,
         type: 3}
       insertIndex: -1
+      addedObject: {fileID: 7915488588026737950}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8c15ff989b4fc8b4c9b9a82ec417d25d,
+        type: 3}
+      insertIndex: -1
       addedObject: {fileID: 5596103791545462759}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8c15ff989b4fc8b4c9b9a82ec417d25d,
         type: 3}
@@ -1966,6 +2032,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 7298606017835303959}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8c15ff989b4fc8b4c9b9a82ec417d25d,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1311493093159451155}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8c15ff989b4fc8b4c9b9a82ec417d25d,
         type: 3}
       insertIndex: -1
@@ -2078,7 +2148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: facdfa382fc3b5543acb00ac16b5ccc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 5
+  _speed: 7
   joyStick: {fileID: 0}
   _smoothRotateTime: 0.15
   _upgradeSpeedDuration: 4
@@ -2106,6 +2176,7 @@ MonoBehaviour:
   - {fileID: 3257805919479739742}
   - {fileID: 7298606017835303959}
   _camPhase2: {fileID: 1634031227237388320}
+  Phase2Started: 0
 --- !u!120 &1391274662706908835
 LineRenderer:
   serializedVersion: 2

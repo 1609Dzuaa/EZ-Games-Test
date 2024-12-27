@@ -48,8 +48,8 @@ public static class GameConstants
     public const float TRIPLE_REWARD = 3.0f;
     public const float DEFAULT_VALUE_ZERO = 0.0f;
     public const float DEFAULT_VALUE_ONE = 1.0f;
-    public const float DECREASE_VELO_EACH_CAT = 1.1f;
-    public const int DEFAULT_MAX_CAT = 1;
+    public const float DECREASE_VELO_EACH_CAT = 1.0f;
+    public const int DEFAULT_MAX_CAT = 6;
 
     #endregion
 

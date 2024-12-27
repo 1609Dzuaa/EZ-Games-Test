@@ -22,15 +22,21 @@ public class MeasureController : MonoBehaviour
         EventsManager.Subscribe(EventID.OnAllowToPlay, AllowUpdate);
         EventsManager.Subscribe(EventID.OnReceiveResult, DenyUpdate);
         EventsManager.Subscribe(EventID.OnIncreaseSpeedUI, DisplaySpeed);
-        _playerRef = GameObject.Find(PLAYER_NAME).GetComponent<PlayerController>(); //lười :v
+        //_playerRef = GameObject.Find(PLAYER_NAME).GetComponent<PlayerController>(); //lười :v
         //Debug.Log("sub");
     }
 
-    private void DenyUpdate(object obj) => _inGameplay = false;
+    private void DenyUpdate(object obj)
+    {
+        _inGameplay = false;
+        _tempSpeed = DEFAULT_VALUE_ZERO;
+    }
 
     private void DisplaySpeed(object obj)
     {
-        if (_tempSpeed < NEAR_ZERO_THRESHOLD) _tempSpeed = _playerRef.Speed;
+        if (!_playerRef) _playerRef = GameObject.Find(PLAYER_NAME).GetComponent<PlayerController>(); //lười :v
+
+        if (_tempSpeed < NEAR_ZERO_THRESHOLD && _playerRef) _tempSpeed = _playerRef.Speed;
 
         _tempSpeed += (float)obj;
         _txtMaxSpeed.text = (_tempSpeed).ToString("0.0");
@@ -40,7 +46,7 @@ public class MeasureController : MonoBehaviour
 
     private void Update()
     {
-        if (_inGameplay && _txtMaxSpeed != null)
+        if (_inGameplay && _txtMaxSpeed != null && _playerRef)
             _txtMaxSpeed.text = _playerRef.Speed.ToString();
     }
 

@@ -9,7 +9,7 @@ public class WaveController : BaseCharacter
     [SerializeField] float _speedIncrese;
 
     float _timer = 0f;
-    bool _canMove = true;
+    bool _canMove = false;
     Vector3 _initialPlayerPos;
     BoxCollider _boxCol;
 
@@ -26,6 +26,7 @@ public class WaveController : BaseCharacter
             PlayerPos = null,
             WavePos = transform
         });
+        EventsManager.Subscribe(EventID.OnAllowToPlay, StartMoving);
         EventsManager.Subscribe(EventID.OnReceiveResult, StopMoving);
         EventsManager.Subscribe(EventID.OnRevive, Revive);
         EventsManager.Subscribe(EventID.OnSendPosition, CacheInitialPlayerPos);
@@ -33,6 +34,8 @@ public class WaveController : BaseCharacter
     }
 
     private void IncreseWaveSpeed(object obj) => _speed = _speedIncrese;
+
+    private void StartMoving(object obj) => _canMove = true;
 
     private void StopMoving(object obj)
     {
@@ -69,7 +72,8 @@ public class WaveController : BaseCharacter
         EventsManager.Unsubscribe(EventID.OnReceiveResult, StopMoving);
         EventsManager.Unsubscribe(EventID.OnSendPosition, CacheInitialPlayerPos);
         EventsManager.Unsubscribe(EventID.OnRevive, Revive);
-        EventsManager.Subscribe(EventID.OnStartPhase2, IncreseWaveSpeed);
+        EventsManager.Unsubscribe(EventID.OnStartPhase2, IncreseWaveSpeed);
+        EventsManager.Unsubscribe(EventID.OnAllowToPlay, StartMoving);
     }
 
     protected override void Update()

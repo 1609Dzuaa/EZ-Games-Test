@@ -27,7 +27,7 @@ public class PlayerController : BaseCharacter
     List<int> _listCatsRescued;
     Collider[] _arrCatCols;
     HashSet<CatController> _hashCatFounded, _hashCatSaved;
-    bool _isMoving = false, _hasDebuffed, _foundCat;
+    bool _isMoving = false, _hasDebuffed, _foundCat, _gameStarted;
     [HideInInspector] public bool Phase2Started;
     Vector3 _input;
     float _maxPositionX;
@@ -215,6 +215,8 @@ public class PlayerController : BaseCharacter
                 Money = _hashCatSaved.Count * BOUNTY_EACH_CAT + _maxPositionX * BOUNTY_EACH_METTER,
                 PositionX = transform.position.x
             });
+            _speed = DEFAULT_VALUE_ZERO;
+            ChangeState(IdleState);
             //Debug.Log("You lose");
         }
         else if (other.CompareTag(END_ZONE_TAG))
@@ -345,7 +347,13 @@ public class PlayerController : BaseCharacter
 
     private void StartGame()
     {
-        EventsManager.Notify(EventID.OnStartCount);
+        //bi goi 2 lan@@
+        if (!_gameStarted)
+        {
+            _gameStarted = true;
+            EventsManager.Notify(EventID.OnStartCount);
+        }
+        Debug.Log("Start the game");
     }
 
     private void BackToIdle()

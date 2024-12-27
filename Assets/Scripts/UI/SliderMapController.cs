@@ -44,11 +44,19 @@ public class SliderMapController : MonoBehaviour
         EventsManager.Subscribe(EventID.OnCatSendPosition, AddCat);
         EventsManager.Subscribe(EventID.OnCatRescued, RemoveCat);
         EventsManager.Subscribe(EventID.OnReceiveResult, HideUI);
+        EventsManager.Subscribe(EventID.OnAllowToPlay, SortList);
         gameObject.SetActive(false);
         //_startLinePositionX = _player.position.x; //là startLine trong design file
     }
 
-    private void HideUI(object obj) => gameObject.SetActive(false);
+    private void HideUI(object obj)
+    {
+        _listCats.Clear();
+        _dictCatSliders.Clear();
+        _playerSlider.value = DEFAULT_VALUE_ZERO;
+        _waveSlider.value = DEFAULT_VALUE_ZERO;
+        gameObject.SetActive(false);
+    }
 
 
     private void DisplayUI(object obj) => gameObject.SetActive(true);
@@ -78,20 +86,27 @@ public class SliderMapController : MonoBehaviour
         catIcon.transform.position = transform.position;
         catIcon.value = (catAdded.PositionX - _startLinePositionX) / _mapLength;
         _listCats.Add(catAdded);
-        _listCats.OrderByDescending(x => x.PositionX);
-        EventsManager.Notify(EventID.OnCatDisplayRange, _listCats[_listCats.Count - 1]);
         _dictCatSliders.Add(catAdded.Controller, catIcon);
-        //Debug.Log("Cat add: " + catAdded.Controller.gameObject.name);
+        Debug.Log("Cat add: " + catAdded.Controller.gameObject.name);
     }
 
     private void RemoveCat(object obj)
     {
         CatController catRemoved = (CatController)obj;
         _listCats.Remove(_listCats.Find(x => x.Controller == catRemoved));
-        _listCats.OrderByDescending(x => x.PositionX);
+        var sortedList = _listCats.OrderByDescending(x => x.PositionX).ToList();
+        _listCats = sortedList;
         Destroy(_dictCatSliders[catRemoved].gameObject);
         EventsManager.Notify(EventID.OnCatDisplayRange, (_listCats.Count > 0) ? _listCats[_listCats.Count - 1] : null);
         //Debug.Log("remove cat:" + (CatController)obj + "out of Slider Map");
+    }
+
+    private void SortList(object obj)
+    {
+        var sortedList = _listCats.OrderByDescending(x => x.PositionX).ToList();
+        for(int i = 0; i < sortedList.Count; i++)
+            Debug.Log("cat, x: " + sortedList[i].Controller.gameObject.name + ", " + sortedList[i].PositionX);
+        EventsManager.Notify(EventID.OnCatDisplayRange, sortedList[sortedList.Count - 1]);
     }
 
     private void OnDestroy()
@@ -101,6 +116,7 @@ public class SliderMapController : MonoBehaviour
         EventsManager.Unsubscribe(EventID.OnCatSendPosition, AddCat);
         EventsManager.Unsubscribe(EventID.OnCatRescued, RemoveCat);
         EventsManager.Unsubscribe(EventID.OnReceiveResult, HideUI);
+        EventsManager.Unsubscribe(EventID.OnAllowToPlay, SortList);
     }
 
     // Update is called once per frame

@@ -870,7 +870,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _txtStamina: {fileID: 4831347368718258427}
-  _stamina: 500
+  _stamina: 300
   _tweenDuration: 0.25
   _sliderStamina: {fileID: 4362975994990603495}
   _imageSlider: {fileID: 1454011480686709811}
@@ -1496,7 +1496,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c965dda0e46cf74bbfb87a27545bbe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mapLength: 185
+  _mapLength: 85
   _playerSlider: {fileID: 4144679460097948010}
   _waveSlider: {fileID: 2149287517070263672}
   _catSliderPrefab: {fileID: 7775279681789466624, guid: 5e787810c238cf84183379b90284d8a3,

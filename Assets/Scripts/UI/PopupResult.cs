@@ -30,9 +30,11 @@ public class PopupResult : PopupController
     const int GET_NORMAL = 1;
     ResultParams _params;
     float _value;
+    Vector3 _playerInitialX;
 
     private void Start()
     {
+        _playerInitialX = GameObject.Find("Player").transform.position;
         EventsManager.Subscribe(EventID.OnReceiveResult, OnReceiveResult);
     }
 
@@ -47,10 +49,10 @@ public class PopupResult : PopupController
     {
         float endZonePosX = GameObject.Find("EndZone").transform.position.x; //too lazy
         _params = (ResultParams)obj;
-        _value = (_params.PositionX / endZonePosX) + _params.Rescued * 0.1f; 
+        _value = Mathf.Clamp((_params.PositionX - _playerInitialX.x) / (endZonePosX - _playerInitialX.x) + _params.Rescued * 0.1f, 0f, 100f); 
         Debug.Log("prg: " + _value);
         _txtProgress.text = $"{_value * 100f :0.0}" + "%";
-        _txtResult.text = _params.Result == EResult.Completed ? "Completed!" : "Failed!";
+        _txtResult.text = _params.Result == EResult.Completed && _params.Rescued == DEFAULT_MAX_CAT ? "Completed!" : "Failed!";
         _txtRescued.text = _params.Rescued.ToString() + "/5";
         _txtTimer.text = ConvertTimer(_params.Timer);
         _txtSpeed.text = $"{_params.MaxSpeed:0.0} m/s";
