@@ -384,7 +384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scaleDuration: 0.3
-  _countDuration: 3.15
+  _countDuration: 3
   _scaleFactor: 1.315
   _ease: 24
   _txtCountdown: {fileID: 2232275475270032668}

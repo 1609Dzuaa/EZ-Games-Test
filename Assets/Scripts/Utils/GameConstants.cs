@@ -20,6 +20,7 @@ public static class GameConstants
     public const float MAX_WIDTH_OF_MAP = 6.5f;
     public const float MIN_WIDTH_OF_MAP = -6.5f;
     public const float CAT_STOPPING_DISTANCE = 0.7f;
+    public const int DEFAULT_VALUE_ZERO_INT = 0;
 
     #endregion
 

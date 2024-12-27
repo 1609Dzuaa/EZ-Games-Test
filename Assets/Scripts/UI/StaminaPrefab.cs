@@ -5,6 +5,7 @@ using DG.Tweening;
 using TMPro;
 using static GameEnums;
 using UnityEngine.UI;
+using static GameConstants;
 
 public class StaminaPrefab : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class StaminaPrefab : MonoBehaviour
     void Awake()
     {
         EventsManager.Subscribe(EventID.OnUpgradeSpeed, ShowDecrease);
-        Debug.Log("stami Regis upgrade");
+        //Debug.Log("stami Regis upgrade");
     }
 
     private void OnEnable()
@@ -68,6 +69,9 @@ public class StaminaPrefab : MonoBehaviour
         transform.DOScale(Vector3.zero, _fadeDuration).OnComplete(() =>
         {
             gameObject.SetActive(false);
+            _icon.DOFade(FADE_IN, NEAR_ZERO_THRESHOLD_2);
+            transform.localScale = Vector3.one;
+            transform.position = _initialPos;
         });
     }
 

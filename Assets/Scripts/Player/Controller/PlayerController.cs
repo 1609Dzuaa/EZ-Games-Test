@@ -105,7 +105,7 @@ public class PlayerController : BaseCharacter
             //những con mèo theo sau mới bị trừ đi khỏi hash rescue
             Destroy(catDestroyed.gameObject);
             _hashCatSaved.Remove(catDestroyed);
-            Debug.Log("Cat " + catDestroyed.name + " get destroyed");
+            //Debug.Log("Cat " + catDestroyed.name + " get destroyed");
         }
     }
 
@@ -115,7 +115,7 @@ public class PlayerController : BaseCharacter
         _speed += (float)obj;
         _maxSpeed = _speed; //speed lúc này là cực đại
         _upgradeSpeedTimer = Time.time;
-        //Debug.Log("maxSpeed: " + _maxSpeed);
+        Debug.Log("UpdateSpeed: " + _speed);
     }
 
     private void CacheJoystick(object obj) => joyStick = (Joystick)obj;
@@ -268,11 +268,12 @@ public class PlayerController : BaseCharacter
 
     private void DebuffSpeed()
     {
-        if (Time.time - _upgradeSpeedTimer >= _upgradeSpeedDuration && !_hasDebuffed)
+        if (Time.time - _upgradeSpeedTimer >= _upgradeSpeedDuration && !_hasDebuffed
+            && _upgradeSpeedTimer != 0f)
         {
             _hasDebuffed = true;
             _speed = _initialSpeed;
-            //Debug.Log("debuff " + _speed);
+            Debug.Log("debuff " + _speed);
         }
     }
 
@@ -280,11 +281,6 @@ public class PlayerController : BaseCharacter
     {
         if (transform.position.x > _maxPositionX)
             _maxPositionX = transform.position.x;
-    }
-
-    private void OnDrawGizmos()
-    {
-        //Gizmos.DrawSphere(transform.position, _radius);
     }
 
     //modify hàm DrawCircle bên cat 1 tí

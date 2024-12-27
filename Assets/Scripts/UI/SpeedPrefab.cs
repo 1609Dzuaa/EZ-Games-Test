@@ -6,6 +6,7 @@ using TMPro;
 using static GameEnums;
 using UnityEngine.UI;
 using System;
+using static GameConstants;
 
 public struct Speed
 {
@@ -34,15 +35,14 @@ public class SpeedPrefab : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        PrefabID = Guid.NewGuid().ToString();
         EventsManager.Subscribe(EventID.OnUpgradeSpeed, CacheBaseIncrease);
         EventsManager.Subscribe(EventID.OnIncreaseSpeed, IncreaseSpeed);
-        Debug.Log("speed Regis upgrade");
+        //Debug.Log("speed Regis upgrade");
     }
 
     private void OnEnable()
     {
-        PrefabID = Guid.NewGuid().ToString();
-
         if (_isFirstOnEnable)
         {
             _isFirstOnEnable = false;
@@ -86,6 +86,10 @@ public class SpeedPrefab : MonoBehaviour
         transform.DOScale(Vector3.zero, _fadeDuration).OnComplete(() =>
         {
             gameObject.SetActive(false);
+            _icon.DOFade(FADE_IN, NEAR_ZERO_THRESHOLD_2);
+            transform.localScale = Vector3.one;
+            transform.position = _initialPos;
+            _txtIncrease.DOFade(FADE_IN, NEAR_ZERO_THRESHOLD_2);
         });
     }
 

@@ -45,6 +45,7 @@ public class StaminaController : MonoBehaviour
         _decreaseStamina = _decreasePrefab * STAMINA_DECREASE_EACH_COUNT_FACTOR;
         _sliderStamina.value = SLIDER_MAX_VALUE;
         EventsManager.Subscribe(EventID.OnAllowToPlay, StopDecrease);
+        EventsManager.Subscribe(EventID.OnReloadLevel, AllowToDecrease);
     }
 
     private void Start()
@@ -52,13 +53,25 @@ public class StaminaController : MonoBehaviour
         _cacheIncrease = _decreasePrefab * SPEED_INCREASE_EACH_COUNT_FACTOR;
         StaminaSpeed sp = new StaminaSpeed(_decreasePrefab, _cacheIncrease);
         EventsManager.Notify(EventID.OnUpgradeSpeed, sp);
-        Debug.Log("SMC Noti upgrade");
+        //Debug.Log("SMC Noti upgrade");
     }
 
     private void OnDestroy()
     {
         EventsManager.Unsubscribe(EventID.OnAllowToPlay, StopDecrease);
+        EventsManager.Subscribe(EventID.OnReloadLevel, AllowToDecrease);
     }
+
+    private void AllowToDecrease(object obj)
+    {
+        //reset things here
+        _allowDecrease = true;
+        _stamina = _initialStamina;
+        _txtStamina.text = ((int)_stamina).ToString() + "/" + _initialStamina.ToString();
+        _imageSlider.DOFillAmount(DEFAULT_VALUE_ONE, NEAR_ZERO_THRESHOLD_2);
+        _countTouch = DEFAULT_VALUE_ZERO_INT;
+    }
+
 
     private void StopDecrease(object obj)
     {
@@ -107,9 +120,6 @@ public class StaminaController : MonoBehaviour
                 {
                     _stamina -= (_decreasePrefab * STAMINA_DECREASE_EACH_COUNT_FACTOR);
                     _stamina = Mathf.Clamp(_stamina, MIN_STAMINA_ENABLED, _initialStamina);
-                    if (_imageSlider == null)
-                        Debug.Log("Tween null update Stamina contr");
-                    if (_imageSlider != null)
                     _imageSlider.DOFillAmount(_stamina / _initialStamina, _tweenDuration);
                     _txtStamina.text = _stamina.ToString() + "/" + _initialStamina.ToString();
                     SpawnPrefab(EPoolable.StaminaPrefab, _staminaSpawn.position);
